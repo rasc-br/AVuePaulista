@@ -94,19 +94,19 @@
     </q-drawer>
 
     <q-page-container>
-      <HelloWorld />
+      <Clock />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import Clock from "./components/Clock.vue";
 
 export default {
   name: "LayoutDefault",
 
   components: {
-    HelloWorld,
+    Clock,
   },
 
   data() {

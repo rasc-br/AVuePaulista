@@ -1,14 +1,12 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-chip
-      outline
-      square
-      color="red"
-      text-color="white"
-      icon="alarm"
-      :label="time"
-    />
-  </q-page>
+  <q-chip
+    outline
+    square
+    color="red"
+    text-color="white"
+    icon="alarm"
+    :label="time"
+  />
 </template>
 
 <script lang="ts">

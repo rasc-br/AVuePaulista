@@ -1,12 +1,22 @@
 <template>
-  <q-chip
-    outline
-    square
-    color="red"
-    text-color="white"
-    icon="alarm"
-    :label="time"
-  />
+  <div>
+    <div class="row flex-center">
+      <q-icon
+        :name="nightTime ? 'bedtime' : 'brightness_7'"
+        style="font-size: 3em"
+      />
+    </div>
+    <div class="row">
+      <q-chip
+        outline
+        square
+        color="red"
+        text-color="white"
+        icon="alarm"
+        :label="time"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,6 +33,9 @@ export default class Clock extends Vue {
       .startOf("hour")
       .add(this.addMinutes, "minutes")
       .format("LT");
+  }
+  get nightTime(): boolean {
+    return dayjs(this.time, "LT").hour() > 20;
   }
   created(): void {
     dayjs.extend(localizedFormat);

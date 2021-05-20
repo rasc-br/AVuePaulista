@@ -1,13 +1,28 @@
 <template>
   <div class="q-pa-md room-actions">
-    <q-btn round color="amber" text-color="black" icon="sports_mma" />
-    <q-btn round color="amber" text-color="black" icon="announcement" />
     <q-btn
+      class="icon-actions"
       round
-      color="amber"
-      text-color="black"
-      class="rotate-180"
-      icon="play_for_work"
+      push
+      color="red-10"
+      text-color="white"
+      icon="sports_mma"
+    />
+    <q-btn
+      class="icon-actions"
+      round
+      push
+      color="blue-9"
+      text-color="white"
+      icon="announcement"
+    />
+    <q-btn
+      class="icon-actions"
+      round
+      push
+      color="green-9"
+      text-color="white"
+      icon="back_hand"
     />
   </div>
 </template>
@@ -20,3 +35,8 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class RoomActions extends Vue {}
 </script>
+<style lang="scss" scoped>
+.icon-actions {
+  font-size: 1.5em;
+}
+</style>

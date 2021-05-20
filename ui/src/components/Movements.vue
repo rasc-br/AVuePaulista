@@ -13,7 +13,7 @@
     </q-input>
     <div class="options flex justify-around">
       <div v-for="place in placeOptions" :key="place">
-        <q-btn rounded class="to-go-place">
+        <q-btn align="between" rounded class="to-go-place">
           <q-icon class="explore" left size="2em" name="explore" />
           <div>{{ place }}</div>
         </q-btn>
@@ -30,7 +30,12 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class Movements extends Vue {
   get placeOptions(): string[] {
-    return ["Rua Augusta", "Alta Paulista", "Baixa Paulista", "Algum outro lugar"];
+    return [
+      "Rua Augusta",
+      "Alta Paulista",
+      "Baixa Paulista",
+      "Algum outro lugar",
+    ];
   }
 }
 </script>

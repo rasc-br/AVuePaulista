@@ -29,6 +29,7 @@ import { Component, Vue } from "vue-property-decorator";
   name: "Movements",
 })
 export default class Movements extends Vue {
+  private places = process.env.VUE_APP_PLACES.split(", ");
   get placeOptions(): string[] {
     return [
       "Rua Augusta",
@@ -36,6 +37,14 @@ export default class Movements extends Vue {
       "Baixa Paulista",
       "Algum outro lugar",
     ];
+  }
+  created(): void {
+    // Game Requirement: Player cannot start on "Céu"(sky) or "Teto do MASP"(End stage)
+    const maxPosition = this.places.length - 3;
+    this.$store.dispatch(
+      "updatePlayerPosition",
+      this.randomBetween(0, maxPosition)
+    );
   }
 }
 </script>
@@ -57,7 +66,6 @@ export default class Movements extends Vue {
 .to-go-place {
   background: rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
-  // min-width: 250px;
 }
 .explore {
   color: rgba(0, 0, 0, 0.5);

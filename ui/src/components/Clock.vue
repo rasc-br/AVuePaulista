@@ -26,7 +26,9 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 
 @Component
 export default class Clock extends Vue {
-  private addMinutes = 0;
+  get addMinutes(): number {
+    return this.$store.state.status.addMinutes;
+  }
   get time(): string {
     return dayjs()
       .hour(process.env.VUE_APP_START_TIME)
@@ -42,7 +44,7 @@ export default class Clock extends Vue {
   }
   mounted(): void {
     setInterval((): void => {
-      this.addMinutes = this.addMinutes + 1;
+      this.$store.dispatch("addMinutes", 1);
     }, 10000);
   }
 }

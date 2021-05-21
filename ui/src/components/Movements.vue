@@ -1,11 +1,11 @@
 <template>
-  <div class="q-pa-md moviments">
+  <div class="q-pa-md movements">
     <q-input
       readonly
       rounded
       standout
       class="current-position"
-      label="Current Position:"
+      :label="`Current Position: ${places[currentPosition]}`"
     >
       <template v-slot:prepend>
         <q-icon name="place" />
@@ -13,9 +13,14 @@
     </q-input>
     <div class="options flex justify-around">
       <div v-for="place in placeOptions" :key="place">
-        <q-btn align="between" rounded class="to-go-place">
+        <q-btn
+          align="between"
+          rounded
+          class="to-go-place"
+          @click="movePlayer(place)"
+        >
           <q-icon class="explore" left size="2em" name="explore" />
-          <div>{{ place }}</div>
+          <div>{{ places[place] }}</div>
         </q-btn>
       </div>
     </div>
@@ -31,12 +36,10 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Movements extends Vue {
   private places = process.env.VUE_APP_PLACES.split(", ");
   get placeOptions(): string[] {
-    return [
-      "Rua Augusta",
-      "Alta Paulista",
-      "Baixa Paulista",
-      "Algum outro lugar",
-    ];
+    return this.$store.state.playerStatus.possibleMovements;
+  }
+  get currentPosition(): number {
+    return this.$store.state.playerStatus.currentPosition;
   }
   created(): void {
     // Game Requirement: Player cannot start on "Céu"(sky) or "Teto do MASP"(End stage)
@@ -45,6 +48,10 @@ export default class Movements extends Vue {
       "updatePlayerPosition",
       this.randomBetween(0, maxPosition)
     );
+  }
+
+  movePlayer(place: number): void {
+    this.$store.dispatch("updatePlayerPosition", place);
   }
 }
 </script>
@@ -56,7 +63,7 @@ export default class Movements extends Vue {
 .q-btn {
   text-transform: none;
 }
-.moviments {
+.movements {
   width: 100%;
 }
 .current-position {

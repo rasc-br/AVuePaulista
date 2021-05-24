@@ -1,5 +1,17 @@
 <template>
-  <div class="q-pa-md inventory flex flex-center">Add inventory here</div>
+  <q-card class="inventory bg-red-3">
+    <q-list>
+      <q-item clickable>
+        <q-item-section avatar>
+          <q-icon class="sword" color="blue-grey-8" name="custom" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>Sword</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
+  </q-card>
 </template>
 
 <script lang="ts">
@@ -12,9 +24,11 @@ export default class Inventory extends Vue {}
 </script>
 <style lang="scss" scoped>
 .inventory {
-  border: 1px solid black;
   height: 100%;
   width: 100%;
   margin-left: 20px;
+}
+.sword:before {
+  content: url("../assets/sword.svg");
 }
 </style>

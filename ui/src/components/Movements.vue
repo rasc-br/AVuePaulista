@@ -52,6 +52,7 @@ export default class Movements extends Vue {
 
   movePlayer(place: number): void {
     this.$store.dispatch("updatePlayerPosition", place);
+    this.$store.dispatch("addMinutes", this.randomBetween(10, 20));
   }
 }
 </script>
@@ -79,5 +80,6 @@ export default class Movements extends Vue {
 }
 .options {
   max-width: 600px;
+  min-height: 112px;
 }
 </style>

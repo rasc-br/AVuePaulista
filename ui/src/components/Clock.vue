@@ -37,7 +37,13 @@ export default class Clock extends Vue {
       .format("LT");
   }
   get nightTime(): boolean {
-    return dayjs(this.time, "LT").hour() > 20;
+    return (
+      dayjs()
+        .hour(process.env.VUE_APP_START_TIME)
+        .startOf("hour")
+        .add(this.addMinutes, "minutes")
+        .hour() > 20
+    );
   }
   created(): void {
     dayjs.extend(localizedFormat);

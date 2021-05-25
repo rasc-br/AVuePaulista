@@ -1,9 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import positions from '@/models/positions';
+import characters from '@/models/characters';
+import items from '@/models/items';
 
 Vue.use(Vuex);
-const places = process.env.VUE_APP_PLACES.split(", ");
 
 const getPossibleMovements = (position: number): number[] => {
   switch (position) {
@@ -46,7 +47,6 @@ const getPossibleMovements = (position: number): number[] => {
   }
 }
 
-
 export default new Vuex.Store({
   state: {
     status: {
@@ -55,10 +55,41 @@ export default new Vuex.Store({
     playerStatus: {
       currentPosition: -1,
       possibleMovements: [-1],
+      health: 10,
+      maxhealth: 10,
+      capacity: 15,
+      inventory: [],
     },
     gameObjects: {
-      places: places,
-    }
+      places: process.env.VUE_APP_PLACES.split(", "),
+      characters: [{
+        name: characters.Bruxa,
+        position: positions.TetoMASP,
+        health: 15,
+        maxhealth: 15,     
+      },
+      {
+        name: characters.Cerebro,
+        position: positions.TetoMASP,
+        health: 1,
+        maxhealth: 1,           
+      },
+      {
+        name: characters.Feiticeiro,
+        position: positions.Tunel,
+        health: 10,
+        maxhealth: 10,           
+      }],
+      items: [{
+        name: items.Livro,
+        position: positions.Livraria,
+        withPlayer: false,
+      }],
+      currentWords: {
+        book: "",
+        sorceror: "",
+      }
+    },
   },
   mutations: {
     setMinutes(state, minutes: number):void {
@@ -69,7 +100,30 @@ export default new Vuex.Store({
     },
     setPossibleMoviments(state, possibleMovements: number[]):void {
       state.playerStatus.possibleMovements = possibleMovements;
-    },   
+    },
+    setCharacter(state, payload: {character: number, position: number}):void {
+      state.gameObjects.characters.push({
+        name: payload.character,
+        position: payload.position,
+        health: 10,
+        maxhealth: 10,          
+      });
+    },
+    setItem(state, payload: {item: number, position: number}):void {
+      state.gameObjects.items.push({
+        name: payload.item,
+        position: payload.position,
+        withPlayer: false,          
+      });
+    },
+    updateCharacter(state, payload: {character: number, position: number, health: number}):void {
+      Vue.set(state.gameObjects.characters[payload.character], 'position', payload.position);
+      Vue.set(state.gameObjects.characters[payload.character], 'health', payload.health);
+    },
+    updateItem(state, payload: {item: number, position: number, withPlayer: boolean}):void {
+      Vue.set(state.gameObjects.items[payload.item], 'position', payload.position);
+      Vue.set(state.gameObjects.items[payload.item], 'withPlayer', payload.withPlayer);
+    },
   },
   actions: {
     addMinutes({commit}, minutes: number) {
@@ -79,6 +133,12 @@ export default new Vuex.Store({
       commit('setCurrentPosition', position);
       commit('setPossibleMoviments', getPossibleMovements(position));
     },
+    addCharacter({commit}, payload: {character: number, position: number}) {
+      commit('setCharacter', payload);
+    },
+    addItem({commit}, payload: {item: number, position: number}) {
+      commit('setItem', payload);
+    },    
   },
   modules: {},
 });

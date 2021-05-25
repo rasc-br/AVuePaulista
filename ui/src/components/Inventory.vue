@@ -28,7 +28,8 @@ export default class Inventory extends Vue {}
   width: 100%;
   margin-left: 20px;
 }
-.sword:before {
+.sword {
+  padding-left: 7px;
   content: url("../assets/sword.svg");
 }
 </style>

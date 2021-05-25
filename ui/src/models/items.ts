@@ -1,9 +1,9 @@
-enum itens {
+enum items {
+    Livro,
     Espada,
     Hipnodisco,
     Escudo,
     Cera,
-    Livro,
     AsaDelta,
     Luneta,
     KitBomba,
@@ -14,4 +14,4 @@ enum itens {
     BombaDeGas,
 }
 
-export default itens;
+export default items;

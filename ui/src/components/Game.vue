@@ -31,6 +31,8 @@ import InventoryActions from "@/components/InventoryActions.vue";
 import Room from "@/components/Room.vue";
 import Inventory from "@/components/Inventory.vue";
 import Status from "@/components/Status.vue";
+import characters from "@/models/characters";
+import items from "@/models/items";
 
 @Component({
   name: "Game",
@@ -44,7 +46,34 @@ import Status from "@/components/Status.vue";
     Status,
   },
 })
-export default class Game extends Vue {}
+export default class Game extends Vue {
+  private places = process.env.VUE_APP_PLACES.split(", ");
+  populateGame(): void {
+    // Add Characters
+    this.$store.dispatch("addCharacter", {
+      character: characters.Bombardeador,
+      position: this.randomBetween(0, this.places.length - 3),
+    });
+    this.$store.dispatch("addCharacter", {
+      character: characters.Aguia,
+      position: this.randomBetween(0, this.places.length - 2),
+    });
+    this.$store.dispatch("addCharacter", {
+      character: characters.Coruja,
+      position: this.randomBetween(0, this.places.length - 2),
+    });
+    // Add Items
+    for (let i = 1; i <= 10; i++) {
+      this.$store.dispatch("addItem", {
+        character: i,
+        position: this.randomBetween(0, this.places.length - 3),
+      });
+    }
+  }
+  created(): void {
+    this.populateGame();
+  }
+}
 </script>
 
 <style lang="scss" scoped>

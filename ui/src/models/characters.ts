@@ -5,6 +5,7 @@ enum characters {
     Bombardeador,
     Aguia,
     Coruja,
+    Demonio,
 }
 
 export default characters;

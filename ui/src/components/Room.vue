@@ -3,7 +3,7 @@
     <q-list>
       <q-item clickable>
         <q-item-section avatar>
-          <q-icon class="bombarder" color="blue-grey-8" name="custom" />
+          <q-icon :class="['side-icon', 'bombarder']" />
         </q-item-section>
 
         <q-item-section>
@@ -28,7 +28,10 @@ export default class Room extends Vue {}
   height: 100%;
   width: 100%;
 }
-.bombarder:before {
-  content: url("../assets/bombarder.svg");
+.side-icon {
+  padding-left: 7px;
+  &.bombarder {
+    content: url("../assets/bombarder.svg");
+  }
 }
 </style>

@@ -32,7 +32,6 @@ import Room from "@/components/Room.vue";
 import Inventory from "@/components/Inventory.vue";
 import Status from "@/components/Status.vue";
 import characters from "@/models/characters";
-import items from "@/models/items";
 
 @Component({
   name: "Game",
@@ -65,7 +64,7 @@ export default class Game extends Vue {
     // Add Items
     for (let i = 1; i <= 10; i++) {
       this.$store.dispatch("addItem", {
-        character: i,
+        item: i,
         position: this.randomBetween(0, this.places.length - 3),
       });
     }

@@ -1,27 +1,48 @@
 <template>
   <q-card class="room bg-red-3">
     <q-list>
-      <q-item clickable>
-        <q-item-section avatar>
-          <q-icon :class="['side-icon', 'bombarder']" />
-        </q-item-section>
+      <div v-for="object in gameObjects" :key="object">
+        <q-item clickable>
+          <q-item-section avatar>
+            <q-icon :class="['side-icon', 'bombarder']" />
+          </q-item-section>
 
-        <q-item-section>
-          <q-item-label>Bombardeador</q-item-label>
-          <q-item-label caption>10 / 10</q-item-label>
-        </q-item-section>
-      </q-item>
+          <q-item-section>
+            <q-item-label>{{ object.name }}</q-item-label>
+            <q-item-label caption v-if="object.health"
+              >{{ object.health }} / {{ object.maxHealth }}</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+      </div>
     </q-list>
   </q-card>
 </template>
 
 <script lang="ts">
+import { character, item } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({
   name: "Room",
 })
-export default class Room extends Vue {}
+export default class Room extends Vue {
+  private characters = process.env.VUE_APP_CHARACTERS.split(", ");
+  private items = process.env.VUE_APP_ITEMS.split(", ");
+
+  get currentPosition(): number {
+    return this.$store.state.playerStatus.currentPosition;
+  }
+  // Change the .name in the store object to ID and or save the name or map it here
+  get gameObjects(): character[] | item[] {
+    const all = this.$store.state.gameObjects.characters.concat(
+      this.$store.state.gameObjects.items
+    );
+    return all.filter((object: character | item) => {
+      return object.position === this.currentPosition;
+    });
+  }
+}
 </script>
 <style lang="scss" scoped>
 .room {

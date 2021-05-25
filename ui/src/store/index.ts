@@ -56,7 +56,7 @@ export default new Vuex.Store({
       currentPosition: -1,
       possibleMovements: [-1],
       health: 10,
-      maxhealth: 10,
+      maxHealth: 10,
       capacity: 15,
       inventory: [],
     },
@@ -66,19 +66,19 @@ export default new Vuex.Store({
         name: characters.Bruxa,
         position: positions.TetoMASP,
         health: 15,
-        maxhealth: 15,     
+        maxHealth: 15,     
       },
       {
         name: characters.Cerebro,
         position: positions.TetoMASP,
         health: 1,
-        maxhealth: 1,           
+        maxHealth: 1,           
       },
       {
         name: characters.Feiticeiro,
         position: positions.Tunel,
         health: 10,
-        maxhealth: 10,           
+        maxHealth: 10,           
       }],
       items: [{
         name: items.Livro,
@@ -106,7 +106,7 @@ export default new Vuex.Store({
         name: payload.character,
         position: payload.position,
         health: 10,
-        maxhealth: 10,          
+        maxHealth: 10,          
       });
     },
     setItem(state, payload: {item: number, position: number}):void {

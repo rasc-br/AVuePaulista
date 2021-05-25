@@ -7,11 +7,14 @@
             <q-icon :class="['side-icon', 'bombarder']" />
           </q-item-section>
 
-          <q-item-section>
-            <q-item-label>{{ object.name }}</q-item-label>
-            <q-item-label caption v-if="object.health"
+          <q-item-section v-if="object.health">
+            <q-item-label>{{ characters[object.name] }}</q-item-label>
+            <q-item-label caption
               >{{ object.health }} / {{ object.maxHealth }}</q-item-label
             >
+          </q-item-section>
+          <q-item-section v-else>
+            <q-item-label>{{ items[object.name] }}</q-item-label>
           </q-item-section>
         </q-item>
       </div>
@@ -33,7 +36,7 @@ export default class Room extends Vue {
   get currentPosition(): number {
     return this.$store.state.playerStatus.currentPosition;
   }
-  // Change the .name in the store object to ID and or save the name or map it here
+
   get gameObjects(): character[] | item[] {
     const all = this.$store.state.gameObjects.characters.concat(
       this.$store.state.gameObjects.items

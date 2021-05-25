@@ -9,7 +9,7 @@ export interface character {
   name: number,
   position: number,
   health: number,
-  maxhealth: number,
+  maxHealth: number,
 }
 
 export interface item {

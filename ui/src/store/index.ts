@@ -51,6 +51,12 @@ export default new Vuex.Store({
   state: {
     status: {
       addMinutes: 0,
+      log: ["Welcome to AVue Paulisa 2.0"],
+      lastAction: {
+        action: "",
+        object: "",
+        status: "cancel"
+      },
     },
     playerStatus: {
       currentPosition: -1,
@@ -116,6 +122,18 @@ export default new Vuex.Store({
         withPlayer: false,          
       });
     },
+    addLogEntry(state, log: string):void {
+      state.status.log.push(log);
+    },
+    removeLogEntry(state):void {
+      state.status.log.pop();
+    },
+    setLastAction(state, payload: {action: string, object: string, status: string}):void {
+      state.status.lastAction = payload;
+    },
+    updateLastLogEntry(state, log: string):void {
+      state.status.log[state.status.log.length-1] += ` ${log}`;
+    },
     updateCharacter(state, payload: {character: number, position: number, health: number}):void {
       Vue.set(state.gameObjects.characters[payload.character], 'position', payload.position);
       Vue.set(state.gameObjects.characters[payload.character], 'health', payload.health);
@@ -138,7 +156,24 @@ export default new Vuex.Store({
     },
     addItem({commit}, payload: {item: number, position: number}) {
       commit('setItem', payload);
-    },    
+    },
+    addAction({dispatch}, payload: {action: string, object: number, status: string}) {
+      console.log((JSON.stringify(this.state.status.lastAction) != JSON.stringify(payload)));
+      console.log(JSON.stringify(this.state.status.lastAction));
+      console.log(JSON.stringify(payload));
+
+      if (JSON.stringify(this.state.status.lastAction) == JSON.stringify(payload) ) return;
+      dispatch('updateLog', payload);
+    },
+    updateLog({commit}, payload: {action: string, object: number, status: string}) {
+      if (payload.status == "end") commit('updateLastLogEntry', payload.object);
+      if (payload.status == "start") {
+        if (this.state.status.lastAction.status == "start") commit('removeLogEntry');
+        commit('addLogEntry', payload.action);
+      } 
+      if (payload.status == "cancel" && this.state.status.lastAction.status!="cancel") commit('removeLogEntry');
+      commit('setLastAction', payload);
+    },  
   },
   modules: {},
 });

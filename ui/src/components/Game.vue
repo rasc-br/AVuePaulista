@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-red-2" key="game-page">
+  <q-page :class="['bg-red-2', actionClick]" key="game-page" @click="gameClick">
     <div class="row movements-logo-clock">
       <div class="col-6 flex"><Movements /></div>
       <div class="col-2 flex">
@@ -17,7 +17,8 @@
       <div class="col-2 flex flex-center"><InventoryActions /></div>
     </div>
     <div class="row">
-      <div class="col-12 flex flex-center"><Status /></div>
+      <div class="col-6 flex flex-center"><PlayerStatus /></div>
+      <div class="col-6 flex flex-center"><Status /></div>
     </div>
   </q-page>
 </template>
@@ -31,6 +32,7 @@ import InventoryActions from "@/components/InventoryActions.vue";
 import Room from "@/components/Room.vue";
 import Inventory from "@/components/Inventory.vue";
 import Status from "@/components/Status.vue";
+import PlayerStatus from "@/components/PlayerStatus.vue";
 import characters from "@/models/characters";
 
 @Component({
@@ -43,10 +45,16 @@ import characters from "@/models/characters";
     Room,
     Inventory,
     Status,
+    PlayerStatus,
   },
 })
 export default class Game extends Vue {
   private places = process.env.VUE_APP_PLACES.split(", ");
+
+  get actionClick(): string {
+    return this.$store.state.status.lastAction.action;
+  }
+
   populateGame(): void {
     // Add Characters
     this.$store.dispatch("addCharacter", {
@@ -69,6 +77,13 @@ export default class Game extends Vue {
       });
     }
   }
+  gameClick(): void {
+    this.$store.dispatch("addAction", {
+      action: "",
+      object: "",
+      status: "cancel",
+    });
+  }
   created(): void {
     this.populateGame();
   }
@@ -79,5 +94,8 @@ export default class Game extends Vue {
 .avlogo {
   border: 1px solid black;
   margin: 20px;
+}
+.attack {
+  cursor: crosshair !important;
 }
 </style>

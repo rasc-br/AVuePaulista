@@ -8,6 +8,7 @@
         color="red-10"
         text-color="white"
         icon="sports_mma"
+        @click.stop="action('attack')"
       >
         <q-tooltip
           transition-show="flip-right"
@@ -31,6 +32,7 @@
         color="blue-9"
         text-color="white"
         icon="announcement"
+        @click.stop="action('shout')"
       >
         <q-tooltip
           transition-show="flip-right"
@@ -54,6 +56,7 @@
         color="green-9"
         text-color="white"
         icon="back_hand"
+        @click.stop="action('take')"
       >
         <q-tooltip
           transition-show="flip-right"
@@ -78,7 +81,15 @@ import { Component, Vue } from "vue-property-decorator";
 @Component({
   name: "RoomActions",
 })
-export default class RoomActions extends Vue {}
+export default class RoomActions extends Vue {
+  action(type: string): void {
+    this.$store.dispatch("addAction", {
+      action: type,
+      object: "",
+      status: "start",
+    });
+  }
+}
 </script>
 <style lang="scss" scoped>
 .room-actions {

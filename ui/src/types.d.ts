@@ -16,4 +16,5 @@ export interface item {
   name: number,
   position: number,
   withPlayer: boolean,
+  health?: number,
 }

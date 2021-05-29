@@ -95,7 +95,10 @@ export default class Game extends Vue {
   border: 1px solid black;
   margin: 20px;
 }
-.attack {
+.attack,
+.take,
+.use,
+.drop {
   cursor: crosshair !important;
 }
 </style>

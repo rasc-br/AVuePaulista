@@ -47,6 +47,10 @@ const getPossibleMovements = (position: number): number[] => {
   }
 }
 
+const humanizeLog = (text: string): string => {
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
 export default new Vuex.Store({
   state: {
     status: {
@@ -123,7 +127,7 @@ export default new Vuex.Store({
       });
     },
     addLogEntry(state, log: string):void {
-      state.status.log.push(log);
+      state.status.log.push(humanizeLog(log));
     },
     removeLogEntry(state):void {
       state.status.log.pop();
@@ -132,7 +136,7 @@ export default new Vuex.Store({
       state.status.lastAction = payload;
     },
     updateLastLogEntry(state, log: string):void {
-      state.status.log[state.status.log.length-1] += ` ${log}`;
+      Vue.set(state.status.log, state.status.log.length-1 , humanizeLog(`${state.status.log[state.status.log.length-1]} ${log}`));
     },
     updateCharacter(state, payload: {character: number, position: number, health: number}):void {
       Vue.set(state.gameObjects.characters[payload.character], 'position', payload.position);
@@ -166,12 +170,13 @@ export default new Vuex.Store({
       dispatch('updateLog', payload);
     },
     updateLog({commit}, payload: {action: string, object: number, status: string}) {
+      debugger;
       if (payload.status == "end") commit('updateLastLogEntry', payload.object);
       if (payload.status == "start") {
         if (this.state.status.lastAction.status == "start") commit('removeLogEntry');
         commit('addLogEntry', payload.action);
       } 
-      if (payload.status == "cancel" && this.state.status.lastAction.status!="cancel") commit('removeLogEntry');
+      if (payload.status == "cancel" && this.state.status.lastAction.status=="start") commit('removeLogEntry');
       commit('setLastAction', payload);
     },  
   },

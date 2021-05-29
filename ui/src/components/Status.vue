@@ -1,7 +1,7 @@
 <template>
   <q-card class="room bg-deep-orange-3 status">
     <q-list>
-      <div v-for="(entry, index) in logs" :key="index">
+      <div v-for="(entry, index) in logs" :key="`${index}${entry}`">
         <q-item clickable>
           <q-item-section>
             <q-item-label>{{ entry }}</q-item-label>

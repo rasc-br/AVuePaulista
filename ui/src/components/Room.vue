@@ -5,7 +5,7 @@
         v-for="object in gameObjects"
         :key="`${object.name}${object.health}`"
       >
-        <q-item clickable>
+        <q-item clickable @click.stop="action(object)">
           <q-item-section avatar>
             <q-icon
               :class="[
@@ -54,6 +54,22 @@ export default class Room extends Vue {
     return all.filter((object: character | item) => {
       return object.position === this.currentPosition;
     });
+  }
+
+  get lastAction(): string {
+    return this.$store.state.status.lastAction.status;
+  }
+
+  action(object: character | item): void {
+    if (this.lastAction == "start") {
+      this.$store.dispatch("addAction", {
+        action: "",
+        object: object.health
+          ? this.characters[object.name]
+          : this.items[object.name],
+        status: "end",
+      });
+    }
   }
 }
 </script>

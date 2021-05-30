@@ -162,15 +162,10 @@ export default new Vuex.Store({
       commit('setItem', payload);
     },
     addAction({dispatch}, payload: {action: string, object: number, status: string}) {
-      console.log((JSON.stringify(this.state.status.lastAction) != JSON.stringify(payload)));
-      console.log(JSON.stringify(this.state.status.lastAction));
-      console.log(JSON.stringify(payload));
-
       if (JSON.stringify(this.state.status.lastAction) == JSON.stringify(payload) ) return;
       dispatch('updateLog', payload);
     },
     updateLog({commit}, payload: {action: string, object: number, status: string}) {
-      debugger;
       if (payload.status == "end") commit('updateLastLogEntry', payload.object);
       if (payload.status == "start") {
         if (this.state.status.lastAction.status == "start") commit('removeLogEntry');

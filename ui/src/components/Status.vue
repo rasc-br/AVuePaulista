@@ -1,5 +1,5 @@
 <template>
-  <q-card class="room bg-deep-orange-3 status">
+  <q-card class="room bg-deep-orange-3 status" ref="statusContainer">
     <q-list>
       <div v-for="(entry, index) in logs" :key="`${index}${entry}`">
         <q-item clickable>
@@ -21,6 +21,20 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Status extends Vue {
   get logs(): number {
     return this.$store.state.status.log;
+  }
+  get statusContainer(): Element | undefined {
+    return (this.$refs.statusContainer as Partial<Vue>).$el;
+  }
+
+  scrollToBottom(): void {
+    this.$nextTick(() => {
+      if (this.statusContainer)
+        this.statusContainer.scrollTop = this.statusContainer.scrollHeight;
+    });
+  }
+
+  updated(): void {
+    this.scrollToBottom();
   }
 }
 </script>

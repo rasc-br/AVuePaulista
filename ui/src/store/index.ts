@@ -52,7 +52,24 @@ const humanizeLog = (text: string): string => {
 }
 
 const executeAction = (action: {action: string, object: string, status: string}): void => {
-  
+  switch (action.action) {
+    case 'attack':
+      executeAttack(action.object);
+      break;
+    case 'shout':
+      executeShout();
+      break;
+    case 'take':
+      executeTake(action.object);
+      break; 
+  }
+}
+
+const executeAttack = (object: string): void => {
+}
+const executeShout = (): void => {
+}
+const executeTake = (object: string): void => {
 }
 
 export default new Vuex.Store({
@@ -77,25 +94,25 @@ export default new Vuex.Store({
     gameObjects: {
       places: process.env.VUE_APP_PLACES.split(", "),
       characters: [{
-        name: characters.Bruxa,
+        id: characters.Bruxa,
         position: positions.TetoMASP,
         health: 15,
         maxHealth: 15,     
       },
       {
-        name: characters.Cerebro,
+        id: characters.Cerebro,
         position: positions.TetoMASP,
         health: 1,
         maxHealth: 1,           
       },
       {
-        name: characters.Feiticeiro,
+        id: characters.Feiticeiro,
         position: positions.Tunel,
         health: 10,
         maxHealth: 10,           
       }],
       items: [{
-        name: items.Livro,
+        id: items.Livro,
         position: positions.Livraria,
         withPlayer: false,
       }],
@@ -117,7 +134,7 @@ export default new Vuex.Store({
     },
     setCharacter(state, payload: {character: number, position: number}):void {
       state.gameObjects.characters.push({
-        name: payload.character,
+        id: payload.character,
         position: payload.position,
         health: 10,
         maxHealth: 10,          
@@ -125,7 +142,7 @@ export default new Vuex.Store({
     },
     setItem(state, payload: {item: number, position: number}):void {
       state.gameObjects.items.push({
-        name: payload.item,
+        id: payload.item,
         position: payload.position,
         withPlayer: false,          
       });

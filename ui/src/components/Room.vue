@@ -1,30 +1,27 @@
 <template>
   <q-card class="room bg-red-3">
     <q-list>
-      <div
-        v-for="object in gameObjects"
-        :key="`${object.name}${object.health}`"
-      >
+      <div v-for="object in gameObjects" :key="`${object.id}${object.health}`">
         <q-item clickable @click.stop="action(object)">
           <q-item-section avatar>
             <q-icon
               :class="[
                 'side-icon',
                 object.health
-                  ? `icon-char-${object.name}`
-                  : `icon-item-${object.name}`,
+                  ? `icon-char-${object.id}`
+                  : `icon-item-${object.id}`,
               ]"
             />
           </q-item-section>
 
           <q-item-section v-if="object.health">
-            <q-item-label>{{ characters[object.name] }}</q-item-label>
+            <q-item-label>{{ characters[object.id] }}</q-item-label>
             <q-item-label caption
               >{{ object.health }} / {{ object.maxHealth }}</q-item-label
             >
           </q-item-section>
           <q-item-section v-else>
-            <q-item-label>{{ items[object.name] }}</q-item-label>
+            <q-item-label>{{ items[object.id] }}</q-item-label>
           </q-item-section>
         </q-item>
       </div>
@@ -65,8 +62,8 @@ export default class Room extends Vue {
       this.$store.dispatch("addAction", {
         action: "",
         object: object.health
-          ? this.characters[object.name]
-          : this.items[object.name],
+          ? this.characters[object.id]
+          : this.items[object.id],
         status: "end",
       });
     }

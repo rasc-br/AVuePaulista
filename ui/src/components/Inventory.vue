@@ -1,13 +1,13 @@
 <template>
   <q-card class="inventory bg-red-3">
     <q-list>
-      <div v-for="item in inventory" :key="item.name">
+      <div v-for="item in inventory" :key="item.id">
         <q-item clickable>
           <q-item-section avatar>
-            <q-icon :class="['side-icon', `icon-item-${item.name}`]" />
+            <q-icon :class="['side-icon', `icon-item-${item.id}`]" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{ items[item.name] }}</q-item-label>
+            <q-item-label>{{ items[item.id] }}</q-item-label>
           </q-item-section>
         </q-item>
       </div>

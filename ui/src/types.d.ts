@@ -6,14 +6,14 @@ declare module "vue/types/vue" {
 }
 
 export interface character {
-  name: number,
+  id: number,
   position: number,
   health: number,
   maxHealth: number,
 }
 
 export interface item {
-  name: number,
+  id: number,
   position: number,
   withPlayer: boolean,
   health?: number,

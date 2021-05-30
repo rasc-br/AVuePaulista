@@ -51,6 +51,10 @@ const humanizeLog = (text: string): string => {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
+const executeAction = (action: {action: string, object: string, status: string}): void => {
+  
+}
+
 export default new Vuex.Store({
   state: {
     status: {
@@ -161,11 +165,12 @@ export default new Vuex.Store({
     addItem({commit}, payload: {item: number, position: number}) {
       commit('setItem', payload);
     },
-    addAction({dispatch}, payload: {action: string, object: number, status: string}) {
+    addAction({dispatch}, payload: {action: string, object: string, status: string}) {
       if (JSON.stringify(this.state.status.lastAction) == JSON.stringify(payload) ) return;
       dispatch('updateLog', payload);
+      if (payload.status == "end") executeAction(payload);
     },
-    updateLog({commit}, payload: {action: string, object: number, status: string}) {
+    updateLog({commit}, payload: {action: string, object: string, status: string}) {
       if (payload.status == "end") commit('updateLastLogEntry', payload.object);
       if (payload.status == "start") {
         if (this.state.status.lastAction.status == "start") commit('removeLogEntry');
@@ -173,7 +178,7 @@ export default new Vuex.Store({
       } 
       if (payload.status == "cancel" && this.state.status.lastAction.status=="start") commit('removeLogEntry');
       commit('setLastAction', payload);
-    },  
+    }
   },
   modules: {},
 });

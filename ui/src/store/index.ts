@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import positions from '@/models/positions';
 import characters from '@/models/characters';
 import items from '@/models/items';
+import { action } from "@/types";
 
 Vue.use(Vuex);
 
@@ -51,25 +52,25 @@ const humanizeLog = (text: string): string => {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
-const executeAction = (action: {action: string, object: string, status: string}): void => {
+const executeAction = (action: action): void => {
   switch (action.action) {
     case 'attack':
-      executeAttack(action.object);
+      executeAttack(action);
       break;
     case 'shout':
       executeShout();
       break;
     case 'take':
-      executeTake(action.object);
+      executeTake(action);
       break; 
   }
 }
 
-const executeAttack = (object: string): void => {
+const executeAttack = (action: action): void => {
 }
 const executeShout = (): void => {
 }
-const executeTake = (object: string): void => {
+const executeTake = (action: action): void => {
 }
 
 export default new Vuex.Store({
@@ -79,7 +80,8 @@ export default new Vuex.Store({
       log: ["Welcome to AVue Paulisa 2.0"],
       lastAction: {
         action: "",
-        object: "",
+        objectName: "",
+        objectType: "",
         status: "cancel"
       },
     },
@@ -153,7 +155,7 @@ export default new Vuex.Store({
     removeLogEntry(state):void {
       state.status.log.pop();
     },
-    setLastAction(state, payload: {action: string, object: string, status: string}):void {
+    setLastAction(state, payload: action):void {
       state.status.lastAction = payload;
     },
     updateLastLogEntry(state, log: string):void {
@@ -182,13 +184,13 @@ export default new Vuex.Store({
     addItem({commit}, payload: {item: number, position: number}) {
       commit('setItem', payload);
     },
-    addAction({dispatch}, payload: {action: string, object: string, status: string}) {
+    addAction({dispatch}, payload: action) {
       if (JSON.stringify(this.state.status.lastAction) == JSON.stringify(payload) ) return;
       dispatch('updateLog', payload);
       if (payload.status == "end") executeAction(payload);
     },
-    updateLog({commit}, payload: {action: string, object: string, status: string}) {
-      if (payload.status == "end") commit('updateLastLogEntry', payload.object);
+    updateLog({commit}, payload: action) {
+      if (payload.status == "end") commit('updateLastLogEntry', payload.objectName);
       if (payload.status == "start") {
         if (this.state.status.lastAction.status == "start") commit('removeLogEntry');
         commit('addLogEntry', payload.action);

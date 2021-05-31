@@ -18,3 +18,10 @@ export interface item {
   withPlayer: boolean,
   health?: number,
 }
+
+export interface action {
+  action: "take" | "shout" | "attack" | "use" | "drop" | "",
+  objectName: string,
+  objectType: "item" | "character",
+  status: "start" | "end" | "cancel",
+}

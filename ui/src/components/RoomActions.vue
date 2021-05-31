@@ -85,7 +85,8 @@ export default class RoomActions extends Vue {
   action(type: string): void {
     this.$store.dispatch("addAction", {
       action: type,
-      object: "",
+      objectName: "",
+      objectType: "",
       status: "start",
     });
   }

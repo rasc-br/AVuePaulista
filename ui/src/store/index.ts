@@ -52,27 +52,6 @@ const humanizeLog = (text: string): string => {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
-const executeAction = (action: action): void => {
-  switch (action.action) {
-    case 'attack':
-      executeAttack(action);
-      break;
-    case 'shout':
-      executeShout();
-      break;
-    case 'take':
-      executeTake(action);
-      break; 
-  }
-}
-
-const executeAttack = (action: action): void => {
-}
-const executeShout = (): void => {
-}
-const executeTake = (action: action): void => {
-}
-
 export default new Vuex.Store({
   state: {
     status: {
@@ -80,8 +59,11 @@ export default new Vuex.Store({
       log: ["Welcome to AVue Paulisa 2.0"],
       lastAction: {
         action: "",
-        objectName: "",
-        objectType: "",
+        object: {
+          id: -1,
+          name: "",
+          type: "",
+        },
         status: "cancel"
       },
     },
@@ -187,17 +169,30 @@ export default new Vuex.Store({
     addAction({dispatch}, payload: action) {
       if (JSON.stringify(this.state.status.lastAction) == JSON.stringify(payload) ) return;
       dispatch('updateLog', payload);
-      if (payload.status == "end") executeAction(payload);
+      if (payload.status == "end") dispatch('executeAction', payload);
     },
     updateLog({commit}, payload: action) {
-      if (payload.status == "end") commit('updateLastLogEntry', payload.objectName);
+      if (payload.status == "end") commit('updateLastLogEntry', payload.object.name);
       if (payload.status == "start") {
         if (this.state.status.lastAction.status == "start") commit('removeLogEntry');
         commit('addLogEntry', payload.action);
       } 
       if (payload.status == "cancel" && this.state.status.lastAction.status=="start") commit('removeLogEntry');
       commit('setLastAction', payload);
-    }
+    },
+    executeAction({dispatch}, payload: action) {
+      switch (payload.action) {
+        case "take":
+          dispatch ("executeTake", payload);
+          break;
+        default:
+          break;
+      }
+    },
+    executeTake({commit}, payload: action) {
+      
+      commit ("updateItem", {item: payload.object.id, position: this.state.playerStatus.currentPosition, withPlayer: true} );
+    },
   },
   modules: {},
 });

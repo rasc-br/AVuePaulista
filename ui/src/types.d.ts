@@ -21,7 +21,12 @@ export interface item {
 
 export interface action {
   action: "take" | "shout" | "attack" | "use" | "drop" | "",
-  objectName: string,
-  objectType: "item" | "character",
+  object: gameObject,
   status: "start" | "end" | "cancel",
+}
+
+export interface gameObject {
+  id: number,
+  name: string,
+  type: "item" | "character",
 }

@@ -80,8 +80,11 @@ export default class Game extends Vue {
   gameClick(): void {
     this.$store.dispatch("addAction", {
       action: "",
-      objectName: "",
-      objectType: "",
+      object: {
+        id: -1,
+        name: "",
+        type: "",
+      },
       status: "cancel",
     });
   }

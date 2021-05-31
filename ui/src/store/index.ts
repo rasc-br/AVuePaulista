@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Vuex from "vuex";
+import Vuex, { Store } from "vuex";
 import positions from '@/models/positions';
 import characters from '@/models/characters';
 import items from '@/models/items';
@@ -72,8 +72,13 @@ export default new Vuex.Store({
       possibleMovements: [-1],
       health: 10,
       maxHealth: 10,
-      capacity: 15,
-      inventory: [],
+      capacity: 8,
+      points: 0,
+      inventory: [{
+        id: -1,
+        type: ""
+      }],
+      name: "rasc",
     },
     gameObjects: {
       places: process.env.VUE_APP_PLACES.split(", "),
@@ -105,6 +110,10 @@ export default new Vuex.Store({
         sorceror: "",
       }
     },
+    alert: {
+      open: false,
+      message: ""
+    }
   },
   mutations: {
     setMinutes(state, minutes: number):void {
@@ -115,6 +124,9 @@ export default new Vuex.Store({
     },
     setPossibleMoviments(state, possibleMovements: number[]):void {
       state.playerStatus.possibleMovements = possibleMovements;
+    },
+    setPlayerCapacity(state, capacity: number):void {
+      state.playerStatus.capacity = capacity;
     },
     setCharacter(state, payload: {character: number, position: number}):void {
       state.gameObjects.characters.push({
@@ -150,6 +162,12 @@ export default new Vuex.Store({
     updateItem(state, payload: {item: number, position: number, withPlayer: boolean}):void {
       Vue.set(state.gameObjects.items[payload.item], 'position', payload.position);
       Vue.set(state.gameObjects.items[payload.item], 'withPlayer', payload.withPlayer);
+    },
+    setAlert(state, alert: {open: boolean, message: string}):void {
+      state.alert = alert;
+    },
+    addToInventory(state, object: {id: number, type: string}):void {
+      state.playerStatus.inventory.push(object);
     },
   },
   actions: {
@@ -189,9 +207,34 @@ export default new Vuex.Store({
           break;
       }
     },
-    executeTake({commit}, payload: action) {
-      
-      commit ("updateItem", {item: payload.object.id, position: this.state.playerStatus.currentPosition, withPlayer: true} );
+    openAlert({commit},  alert: {open: boolean, message: string}) {
+      commit('setAlert', alert);
+    },
+    executeTake({commit, dispatch}, action: action) {
+      console.log(action);
+      if (action.object.type == "character") {
+        switch (action.object.id) {
+          case characters.Bruxa:
+            dispatch ("openAlert", { open: true, message: "You cannot carry her", subMessage: "Are you insane?!"});
+            break;
+          case characters.Cerebro:
+            dispatch ("openAlert", { open: true, message: "You cannot take it", subMessage: "Nice try, but the witch will never allow you"});
+            break;
+          case characters.Coruja:
+            if (this.state.playerStatus.capacity >= 2) {
+              commit("addToInventory", { id: characters.Coruja, type: "character" });
+              commit("updateCharacter", { character: characters.Coruja, position: -1, health: this.state.gameObjects.characters[characters.Coruja].health});
+            } else {
+              dispatch ("openAlert", { open: true, message: "You can't handle the weight" });
+            }
+            break;
+          default:
+            dispatch ("openAlert", { open: true, message: `You can't carry the ${action.object.name}` });
+            break;
+        }
+      }
+      // dispatch ("openAlert", { open: true, message: "Too heavy for you to carry", subMessage: "Are you insane?!"});
+      // commit ("updateItem", {item: payload.object.id, position: this.state.playerStatus.currentPosition, withPlayer: true} );
     },
   },
   modules: {},

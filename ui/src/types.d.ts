@@ -30,3 +30,14 @@ export interface gameObject {
   name: string,
   type: "item" | "character",
 }
+
+export interface playerStatus {
+  currentPosition: number,
+  possibleMovements: number[],
+  health: number,
+  maxHealth: number,
+  capacity: number,
+  points: number,
+  inventory: number[],
+  name: string,
+}

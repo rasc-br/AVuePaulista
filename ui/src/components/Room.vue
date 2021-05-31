@@ -60,7 +60,7 @@ export default class Room extends Vue {
   action(object: character | item): void {
     if (this.lastAction == "start") {
       this.$store.dispatch("addAction", {
-        action: "",
+        action: this.$store.state.status.lastAction.action,
         object: {
           id: object.id,
           name: object.health

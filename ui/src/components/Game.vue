@@ -20,6 +20,17 @@
       <div class="col-6 flex flex-center"><PlayerStatus /></div>
       <div class="col-6 flex flex-center"><Status /></div>
     </div>
+    <!-- DIALOGS -->
+    <q-dialog v-model="alert.open">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6 message">{{ alert.message }}</div>
+          <q-card-section v-if="alert.subMessage" class="q-pt-none sub-message">
+            {{ alert.subMessage }}
+          </q-card-section>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -53,6 +64,9 @@ export default class Game extends Vue {
 
   get actionClick(): string {
     return this.$store.state.status.lastAction.action;
+  }
+  get alert(): { open: boolean; message: string } {
+    return this.$store.state.alert;
   }
 
   populateGame(): void {
@@ -104,5 +118,12 @@ export default class Game extends Vue {
 .use,
 .drop {
   cursor: crosshair !important;
+}
+.message {
+  text-align: center;
+}
+.sub-message {
+  text-align: center;
+  padding-top: 10px;
 }
 </style>

@@ -4,10 +4,17 @@
       <div v-for="item in inventory" :key="item.id">
         <q-item clickable>
           <q-item-section avatar>
-            <q-icon :class="['side-icon', `icon-item-${item.id}`]" />
+            <q-icon
+              :class="[
+                'side-icon',
+                `icon-${item.type == 'character' ? 'char' : 'item'}-${item.id}`,
+              ]"
+            />
           </q-item-section>
           <q-item-section>
-            <q-item-label>{{ items[item.id] }}</q-item-label>
+            <q-item-label>{{
+              item.type == "character" ? characters[item.id] : items[item.id]
+            }}</q-item-label>
           </q-item-section>
         </q-item>
       </div>
@@ -24,6 +31,7 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class Inventory extends Vue {
   private items = process.env.VUE_APP_ITEMS.split(", ");
+  private characters = process.env.VUE_APP_CHARACTERS.split(", ");
 
   get inventory(): item[] {
     return this.$store.state.playerStatus.inventory;
@@ -75,6 +83,9 @@ export default class Inventory extends Vue {
   }
   &.icon-item-10 {
     content: url("../assets/seta.svg");
+  }
+  &.icon-char-5 {
+    content: url("../assets/owl2.svg");
   }
 }
 </style>

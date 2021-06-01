@@ -49,7 +49,7 @@ const getPossibleMovements = (position: number): number[] => {
 }
 
 const humanizeLog = (text: string): string => {
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 export default new Vuex.Store({
@@ -66,6 +66,7 @@ export default new Vuex.Store({
         },
         status: "cancel"
       },
+      scoreFlags: [""],
     },
     playerStatus: {
       currentPosition: -1,
@@ -74,10 +75,7 @@ export default new Vuex.Store({
       maxHealth: 10,
       capacity: 8,
       points: 0,
-      inventory: [{
-        id: -1,
-        type: ""
-      }],
+      inventory: [] as {id: number, type: string}[],
       name: "rasc",
     },
     gameObjects: {
@@ -108,6 +106,7 @@ export default new Vuex.Store({
       currentWords: {
         book: "",
         sorceror: "",
+        witchSpoken: "",
       }
     },
     alert: {
@@ -153,7 +152,7 @@ export default new Vuex.Store({
       state.status.lastAction = payload;
     },
     updateLastLogEntry(state, log: string):void {
-      Vue.set(state.status.log, state.status.log.length-1 , humanizeLog(`${state.status.log[state.status.log.length-1]} ${log}`));
+      Vue.set(state.status.log, state.status.log.length-1 , `${state.status.log[state.status.log.length-1]} ${log}`);
     },
     updateCharacter(state, payload: {character: number, position: number, health: number}):void {
       Vue.set(state.gameObjects.characters[payload.character], 'position', payload.position);
@@ -168,6 +167,12 @@ export default new Vuex.Store({
     },
     addToInventory(state, object: {id: number, type: string}):void {
       state.playerStatus.inventory.push(object);
+    },
+    setScore(state, points: number):void {
+      state.playerStatus.points =+ points;
+    },
+    addFlag(state, flag: string):void {
+      state.status.scoreFlags.push(flag);
     },
   },
   actions: {
@@ -211,29 +216,39 @@ export default new Vuex.Store({
       commit('setAlert', alert);
     },
     executeTake({commit, dispatch}, action: action) {
-      console.log(action);
       if (action.object.type == "character") {
+        let message = `You can't carry the ${action.object.name}`;
         switch (action.object.id) {
           case characters.Bruxa:
-            dispatch ("openAlert", { open: true, message: "You cannot carry her", subMessage: "Are you insane?!"});
+            message = "You cannot carry her";
+            dispatch ("openAlert", { open: true, message, subMessage: "Are you insane?!"});
             break;
           case characters.Cerebro:
-            dispatch ("openAlert", { open: true, message: "You cannot take it", subMessage: "Nice try, but the witch will never allow you"});
+            message = "You cannot take it";
+            dispatch ("openAlert", { open: true, message, subMessage: "Nice try, but the witch will never allow you"});
             break;
           case characters.Coruja:
             if (this.state.playerStatus.capacity >= 2) {
+              message = `The ${action.object.name} is now in your inventory.`;
+              dispatch ("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
               commit("addToInventory", { id: characters.Coruja, type: "character" });
               commit("updateCharacter", { character: characters.Coruja, position: -1, health: this.state.gameObjects.characters[characters.Coruja].health});
+              if (!this.state.status.scoreFlags.includes("take-owl")) {
+                commit("setScore", 10);
+                commit("addFlag", "take-owl");
+                Vue.nextTick(()=> commit('addLogEntry', "10 points for catching the Owl"));
+              }
             } else {
-              dispatch ("openAlert", { open: true, message: "You can't handle the weight" });
+              message = "You can't handle the weight";
+              dispatch ("openAlert", { open: true, message });
             }
             break;
           default:
-            dispatch ("openAlert", { open: true, message: `You can't carry the ${action.object.name}` });
+            dispatch ("openAlert", { open: true, message });
             break;
         }
+        commit('updateLastLogEntry', ` - ${message}`);
       }
-      // dispatch ("openAlert", { open: true, message: "Too heavy for you to carry", subMessage: "Are you insane?!"});
       // commit ("updateItem", {item: payload.object.id, position: this.state.playerStatus.currentPosition, withPlayer: true} );
     },
   },

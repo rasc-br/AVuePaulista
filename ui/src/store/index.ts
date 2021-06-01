@@ -169,7 +169,7 @@ export default new Vuex.Store({
       state.playerStatus.inventory.push(object);
     },
     setScore(state, points: number):void {
-      state.playerStatus.points =+ points;
+      state.playerStatus.points += points;
     },
     addFlag(state, flag: string):void {
       state.status.scoreFlags.push(flag);
@@ -215,6 +215,13 @@ export default new Vuex.Store({
     openAlert({commit},  alert: {open: boolean, message: string}) {
       commit('setAlert', alert);
     },
+    updateScore({commit}, payload: {points: number, flag: string, logMessage: string}) {
+      if (!this.state.status.scoreFlags.includes(payload.flag)) {
+        commit("setScore", payload.points);
+        commit("addFlag", payload.flag);
+        Vue.nextTick(()=> commit('addLogEntry', `${payload.points} point${payload.points > 1 ? 's' : ''} for ${payload.logMessage}`));
+      }
+    },
     executeTake({commit, dispatch}, action: action) {
       if (action.object.type == "character") {
         let message = `You can't carry the ${action.object.name}`;
@@ -222,22 +229,20 @@ export default new Vuex.Store({
           case characters.Bruxa:
             message = "You cannot carry her";
             dispatch ("openAlert", { open: true, message, subMessage: "Are you insane?!"});
+            dispatch("updateScore", {points: 1, flag: "take-witch", logMessage: "bravery"});
             break;
           case characters.Cerebro:
             message = "You cannot take it";
             dispatch ("openAlert", { open: true, message, subMessage: "Nice try, but the witch will never allow you"});
+            dispatch("updateScore", {points: 1, flag: "take-brain", logMessage: "at least trying"});
             break;
           case characters.Coruja:
             if (this.state.playerStatus.capacity >= 2) {
               message = `The ${action.object.name} is now in your inventory.`;
-              dispatch ("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
+              dispatch("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
               commit("addToInventory", { id: characters.Coruja, type: "character" });
               commit("updateCharacter", { character: characters.Coruja, position: -1, health: this.state.gameObjects.characters[characters.Coruja].health});
-              if (!this.state.status.scoreFlags.includes("take-owl")) {
-                commit("setScore", 10);
-                commit("addFlag", "take-owl");
-                Vue.nextTick(()=> commit('addLogEntry', "10 points for catching the Owl"));
-              }
+              dispatch("updateScore", {points: 10, flag: "take-owl", logMessage: "catching the Owl"});
             } else {
               message = "You can't handle the weight";
               dispatch ("openAlert", { open: true, message });

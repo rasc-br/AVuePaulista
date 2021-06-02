@@ -64,7 +64,8 @@ export default class Game extends Vue {
   private itemsWeight = process.env.VUE_APP_ITEMS_WEIGHT.split(", ");
 
   get actionClick(): string {
-    return this.$store.state.status.lastAction.action;
+    const lastAction = this.$store.state.status.lastAction;
+    return lastAction.status != "end" ? lastAction.action : "";
   }
   get alert(): { open: boolean; message: string } {
     return this.$store.state.alert;

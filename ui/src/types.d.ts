@@ -17,6 +17,7 @@ export interface item {
   position: number,
   withPlayer: boolean,
   health?: number,
+  weight?: number
 }
 
 export interface action {

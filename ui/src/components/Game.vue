@@ -61,6 +61,7 @@ import characters from "@/models/characters";
 })
 export default class Game extends Vue {
   private places = process.env.VUE_APP_PLACES.split(", ");
+  private itemsWeight = process.env.VUE_APP_ITEMS_WEIGHT.split(", ");
 
   get actionClick(): string {
     return this.$store.state.status.lastAction.action;
@@ -88,6 +89,7 @@ export default class Game extends Vue {
       this.$store.dispatch("addItem", {
         item: i,
         position: this.randomBetween(0, this.places.length - 3),
+        weight: this.itemsWeight[i],
       });
     }
   }

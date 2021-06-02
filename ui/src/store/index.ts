@@ -102,6 +102,7 @@ export default new Vuex.Store({
         id: items.Livro,
         position: positions.Livraria,
         withPlayer: false,
+        weight: 0,
       }],
       currentWords: {
         book: "",
@@ -135,11 +136,12 @@ export default new Vuex.Store({
         maxHealth: 10,          
       });
     },
-    setItem(state, payload: {item: number, position: number}):void {
+    setItem(state, payload: {item: number, position: number, weight: number}):void {
       state.gameObjects.items.push({
         id: payload.item,
         position: payload.position,
-        withPlayer: false,          
+        withPlayer: false,
+        weight: payload.weight          
       });
     },
     addLogEntry(state, log: string):void {
@@ -186,7 +188,7 @@ export default new Vuex.Store({
     addCharacter({commit}, payload: {character: number, position: number}) {
       commit('setCharacter', payload);
     },
-    addItem({commit}, payload: {item: number, position: number}) {
+    addItem({commit}, payload: {item: number, position: number, weight: number}) {
       commit('setItem', payload);
     },
     addAction({dispatch}, payload: action) {
@@ -242,9 +244,10 @@ export default new Vuex.Store({
               dispatch("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
               commit("addToInventory", { id: characters.Coruja, type: "character" });
               commit("updateCharacter", { character: characters.Coruja, position: -1, health: this.state.gameObjects.characters[characters.Coruja].health});
+              commit("setPlayerCapacity", this.state.playerStatus.capacity -= 2);
               dispatch("updateScore", {points: 10, flag: "take-owl", logMessage: "catching the Owl"});
             } else {
-              message = "You can't handle the weight";
+              message = `The ${action.object.name} is too heavy for you to carry right now`;
               dispatch ("openAlert", { open: true, message });
             }
             break;
@@ -253,8 +256,17 @@ export default new Vuex.Store({
             break;
         }
         commit('updateLastLogEntry', ` - ${message}`);
+      } else {
+        const itemWeight = this.state.gameObjects.items[action.object.id].weight;
+        if (this.state.playerStatus.capacity >= itemWeight) {
+          commit("setPlayerCapacity", this.state.playerStatus.capacity -= itemWeight);
+          commit ("updateItem", {item: action.object.id, position: -1, withPlayer: true} );
+          commit("addToInventory", { id: action.object.id, type: "item" });
+        } else {
+          dispatch("openAlert", { open: true, message: `The ${action.object.name} is too heavy for you to carry right now` });
+          commit('addLogEntry', `The ${action.object.name} is too heavy for you to carry right now`);
+        }
       }
-      // commit ("updateItem", {item: payload.object.id, position: this.state.playerStatus.currentPosition, withPlayer: true} );
     },
   },
   modules: {},

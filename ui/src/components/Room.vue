@@ -2,7 +2,7 @@
   <q-card class="room bg-red-3">
     <q-list>
       <div v-for="object in gameObjects" :key="`${object.id}${object.health}`">
-        <q-item clickable @click.stop="action(object)">
+        <q-item clickable @click.stop="action(object)" class="room-onject">
           <q-item-section avatar>
             <q-icon
               :class="[
@@ -78,6 +78,10 @@ export default class Room extends Vue {
 .room {
   height: 100%;
   width: 100%;
+  margin-right: 20px;
+  .room-onject {
+    cursor: inherit !important;
+  }
 }
 .side-icon {
   padding-left: 7px;

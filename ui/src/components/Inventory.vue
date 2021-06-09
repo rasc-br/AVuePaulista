@@ -43,6 +43,8 @@ export default class Inventory extends Vue {
   height: 100%;
   width: 100%;
   margin-left: 20px;
+  overflow: auto;
+  max-height: 295px;
 }
 .sword {
   padding-left: 7px;

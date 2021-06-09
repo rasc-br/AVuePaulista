@@ -31,6 +31,35 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="shoutDialog.open" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">What do you want to shout:</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-input
+            dense
+            v-model="shout"
+            autofocus
+            @keyup.enter="executeShout()"
+          />
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn
+            flat
+            label="Nah..."
+            @click="
+              () => {
+                gameClick();
+                shout = '';
+              }
+            "
+            v-close-popup
+          />
+          <q-btn flat label="Shout!" @click="executeShout()" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -62,6 +91,8 @@ import characters from "@/models/characters";
 export default class Game extends Vue {
   private places = process.env.VUE_APP_PLACES.split(", ");
   private itemsWeight = process.env.VUE_APP_ITEMS_WEIGHT.split(", ");
+  private words = process.env.VUE_APP_WORDS.split(", ");
+  private shout = "";
 
   get actionClick(): string {
     const lastAction = this.$store.state.status.lastAction;
@@ -69,6 +100,9 @@ export default class Game extends Vue {
   }
   get alert(): { open: boolean; message: string } {
     return this.$store.state.alert;
+  }
+  get shoutDialog(): { open: boolean; message: string } {
+    return this.$store.state.shoutDialog;
   }
 
   populateGame(): void {
@@ -93,6 +127,15 @@ export default class Game extends Vue {
         weight: this.itemsWeight[i],
       });
     }
+    // Create words
+    this.$store.dispatch("addWord", {
+      word: this.words.splice(this.randomBetween(0, this.places.length), 1),
+      type: "book",
+    });
+    this.$store.dispatch("addWord", {
+      word: this.words.splice(this.randomBetween(0, this.places.length), 1),
+      type: "sorcerer",
+    });
   }
   gameClick(): void {
     this.$store.dispatch("addAction", {
@@ -104,6 +147,13 @@ export default class Game extends Vue {
       },
       status: "cancel",
     });
+  }
+  executeShout(): void {
+    this.$store.dispatch("triggerShoutDialog", {
+      open: false,
+      message: this.shout,
+    });
+    this.shout = "";
   }
   created(): void {
     this.populateGame();
@@ -128,5 +178,17 @@ export default class Game extends Vue {
 .sub-message {
   text-align: center;
   padding-top: 10px;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #de0505;
+}
+::-webkit-scrollbar-thumb {
+  background: #8a0303;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #640202;
 }
 </style>

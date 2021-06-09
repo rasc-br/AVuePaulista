@@ -79,6 +79,8 @@ export default class Room extends Vue {
   height: 100%;
   width: 100%;
   margin-right: 20px;
+  max-height: 295px;
+  overflow: auto;
   .room-onject {
     cursor: inherit !important;
   }

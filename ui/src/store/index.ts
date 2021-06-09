@@ -106,11 +106,15 @@ export default new Vuex.Store({
       }],
       currentWords: {
         book: "",
-        sorceror: "",
+        sorcerer: "",
         witchSpoken: "",
       }
     },
     alert: {
+      open: false,
+      message: ""
+    },
+    shoutDialog: {
       open: false,
       message: ""
     }
@@ -144,6 +148,9 @@ export default new Vuex.Store({
         weight: payload.weight          
       });
     },
+    setWord(state, payload: {word: string, type: 'book' | 'sorcerer' | 'witchSpoken'}):void {
+      state.gameObjects.currentWords[payload.type] = payload.word;
+    },
     addLogEntry(state, log: string):void {
       state.status.log.push(humanizeLog(log));
     },
@@ -166,6 +173,9 @@ export default new Vuex.Store({
     },
     setAlert(state, alert: {open: boolean, message: string}):void {
       state.alert = alert;
+    },
+    setShout(state, shoutDialog: {open: boolean, message: string}):void {
+      state.shoutDialog = shoutDialog;
     },
     addToInventory(state, object: {id: number, type: string}):void {
       state.playerStatus.inventory.push(object);
@@ -191,10 +201,13 @@ export default new Vuex.Store({
     addItem({commit}, payload: {item: number, position: number, weight: number}) {
       commit('setItem', payload);
     },
+    addWord({commit}, payload: {word: string, type: 'book' | 'sorcerer' | 'witchSpoken'}) {
+      commit('setWord', payload);
+    },
     addAction({dispatch}, payload: action) {
       if (JSON.stringify(this.state.status.lastAction) == JSON.stringify(payload) ) return;
       dispatch('updateLog', payload);
-      if (payload.status == "end") dispatch('executeAction', payload);
+      if (payload.status == "end" || payload.action == "shout") dispatch('executeAction', payload);
     },
     updateLog({commit}, payload: action) {
       if (payload.status == "end") commit('updateLastLogEntry', payload.object.name);
@@ -210,12 +223,21 @@ export default new Vuex.Store({
         case "take":
           dispatch ("executeTake", payload);
           break;
+        case "shout":
+          dispatch("triggerShoutDialog", { open: true, message: "" });
+          break;
         default:
           break;
       }
     },
     openAlert({commit},  alert: {open: boolean, message: string}) {
       commit('setAlert', alert);
+    },
+    triggerShoutDialog({commit, dispatch},  shoutDialog: {open: boolean, message: string}) {
+      commit('setShout', shoutDialog);
+      if (shoutDialog.message) {
+        dispatch('updateLog', {status: "end", object: { name: shoutDialog.message }});
+      }
     },
     updateScore({commit}, payload: {points: number, flag: string, logMessage: string}) {
       if (!this.state.status.scoreFlags.includes(payload.flag)) {

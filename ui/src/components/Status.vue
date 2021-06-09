@@ -47,16 +47,4 @@ export default class Status extends Vue {
   height: 150px;
   overflow: auto;
 }
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #de0505;
-}
-::-webkit-scrollbar-thumb {
-  background: #8a0303;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #640202;
-}
 </style>

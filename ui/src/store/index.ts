@@ -67,6 +67,8 @@ export default new Vuex.Store({
         status: "cancel"
       },
       scoreFlags: [""],
+      witchInvoke: false,
+      convertedDemon: false,
     },
     playerStatus: {
       currentPosition: -1,
@@ -150,6 +152,12 @@ export default new Vuex.Store({
     },
     setWord(state, payload: {word: string, type: 'book' | 'sorcerer' | 'witchSpoken'}):void {
       state.gameObjects.currentWords[payload.type] = payload.word;
+    },
+    setWitchInvoke(state, flag: boolean):void {
+      state.status.witchInvoke = flag;
+    },
+    setDemonConversion(state, flag: boolean):void {
+      state.status.convertedDemon = flag;
     },
     addLogEntry(state, log: string):void {
       state.status.log.push(humanizeLog(log));
@@ -237,6 +245,31 @@ export default new Vuex.Store({
       commit('setShout', shoutDialog);
       if (shoutDialog.message) {
         dispatch('updateLog', {status: "end", object: { name: shoutDialog.message }});
+        switch(shoutDialog.message) {
+          case this.state.gameObjects.currentWords.book:
+            if (this.state.playerStatus.currentPosition == positions.MASP) {
+              dispatch ("openAlert", { open: true, message: "You reached the roof!" });
+              commit('setCurrentPosition', positions.TetoMASP);
+            } else {
+              dispatch ("openAlert", { open: true, message: "Nothing happened", subMessage: "Nice shout tho" });
+            }
+            break;
+          case this.state.gameObjects.currentWords.sorcerer:
+            if (this.state.status.witchInvoke) {
+              dispatch ("openAlert", { open: true, message: "The witch seems disturbed..." });
+              commit('setDemonConversion', true);
+            } else {
+              dispatch ("openAlert", { open: true, message: "Nothing happened", subMessage: "Nice shout tho" });
+            }
+            break;
+          case "Raphael Candello is the best!":
+            dispatch ("openAlert", { open: true, message: "Thanks!" });
+            dispatch("updateScore", {points: 10, flag: "honor-dev", logMessage: "honoring the developer"});
+            break;
+          default:
+            dispatch ("openAlert", { open: true, message: "Nothing happened", subMessage: "Nice shout tho" });
+            break;
+        }
       }
     },
     updateScore({commit}, payload: {points: number, flag: string, logMessage: string}) {

@@ -2,7 +2,7 @@
   <q-card class="room bg-red-3">
     <q-list>
       <div v-for="object in gameObjects" :key="`${object.id}${object.health}`">
-        <q-item clickable @click.stop="action(object)" class="room-onject">
+        <q-item clickable @click.stop="action(object)" class="room-object">
           <q-item-section avatar>
             <q-icon
               :class="[
@@ -58,6 +58,21 @@ export default class Room extends Vue {
   }
 
   action(object: character | item): void {
+    const validRoomActions = ["attack", "take"];
+    if (
+      !validRoomActions.includes(this.$store.state.status.lastAction.action)
+    ) {
+      this.$store.dispatch("addAction", {
+        action: "",
+        object: {
+          id: -1,
+          name: "",
+          type: "",
+        },
+        status: "cancel",
+      });
+      return;
+    }
     if (this.lastAction == "start") {
       this.$store.dispatch("addAction", {
         action: this.$store.state.status.lastAction.action,
@@ -81,7 +96,7 @@ export default class Room extends Vue {
   margin-right: 20px;
   max-height: 295px;
   overflow: auto;
-  .room-onject {
+  .room-object {
     cursor: inherit !important;
   }
 }

@@ -8,6 +8,7 @@
         color="deep-purple-9"
         text-color="white"
         icon="build"
+        @click.stop="action('use')"
       >
         <q-tooltip
           transition-show="flip-right"
@@ -31,6 +32,7 @@
         color="green-10"
         text-color="white"
         icon="play_for_work"
+        @click.stop="action('drop')"
       >
         <q-tooltip
           transition-show="flip-right"
@@ -55,7 +57,19 @@ import { Component, Vue } from "vue-property-decorator";
 @Component({
   name: "InventoryActions",
 })
-export default class InventoryActions extends Vue {}
+export default class InventoryActions extends Vue {
+  action(type: string): void {
+    this.$store.dispatch("addAction", {
+      action: type,
+      object: {
+        id: -1,
+        name: "",
+        type: "",
+      },
+      status: "start",
+    });
+  }
+}
 </script>
 <style lang="scss" scoped>
 .inventory-actions {

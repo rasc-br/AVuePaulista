@@ -87,19 +87,22 @@ export default new Vuex.Store({
         id: characters.Bruxa,
         position: positions.TetoMASP,
         health: 15,
-        maxHealth: 15,     
+        maxHealth: 15,
+        weight: 0,
       },
       {
         id: characters.Cerebro,
         position: positions.TetoMASP,
         health: 1,
-        maxHealth: 1,           
+        maxHealth: 1,
+        weight: 0,          
       },
       {
         id: characters.Feiticeiro,
         position: positions.Tunel,
         health: 10,
-        maxHealth: 10,           
+        maxHealth: 10,
+        weight: 0,        
       }],
       items: [{
         id: items.Livro,
@@ -135,12 +138,13 @@ export default new Vuex.Store({
     setPlayerCapacity(state, capacity: number):void {
       state.playerStatus.capacity = capacity;
     },
-    setCharacter(state, payload: {character: number, position: number}):void {
+    setCharacter(state, payload: {character: number, position: number, weight?: number}):void {
       state.gameObjects.characters.push({
         id: payload.character,
         position: payload.position,
         health: 10,
-        maxHealth: 10,          
+        maxHealth: 10,
+        weight: payload.weight || 0,
       });
     },
     setItem(state, payload: {item: number, position: number, weight: number}):void {
@@ -175,13 +179,15 @@ export default new Vuex.Store({
     updateLastLogEntry(state, log: string):void {
       Vue.set(state.status.log, state.status.log.length-1 , `${state.status.log[state.status.log.length-1]} ${log}`);
     },
-    updateCharacter(state, payload: {character: number, position: number, health: number}):void {
-      Vue.set(state.gameObjects.characters[payload.character], 'position', payload.position);
-      Vue.set(state.gameObjects.characters[payload.character], 'health', payload.health);
+    updateCharacter(state, payload: {character: number, position?: number, health?: number, weight?: number}):void {
+      if (payload.position || payload.position == 0) Vue.set(state.gameObjects.characters[payload.character], 'position', payload.position);
+      if (payload.health || payload.health == 0) Vue.set(state.gameObjects.characters[payload.character], 'health', payload.health);
+      if (payload.weight || payload.weight == 0) Vue.set(state.gameObjects.characters[payload.character], 'weight', payload.weight);
     },
-    updateItem(state, payload: {item: number, position: number, withPlayer: boolean}):void {
-      Vue.set(state.gameObjects.items[payload.item], 'position', payload.position);
-      Vue.set(state.gameObjects.items[payload.item], 'withPlayer', payload.withPlayer);
+    updateItem(state, payload: {item: number, position?: number, withPlayer?: boolean, weight?: number}):void {
+      if (payload.position || payload.position == 0) Vue.set(state.gameObjects.items[payload.item], 'position', payload.position);
+      if (payload.withPlayer === true || payload.withPlayer === false) Vue.set(state.gameObjects.items[payload.item], 'withPlayer', payload.withPlayer);
+      if (payload.weight || payload.weight == 0) Vue.set(state.gameObjects.items[payload.item], 'weight', payload.weight);
     },
     setAlert(state, alert: {open: boolean, message: string}):void {
       state.alert = alert;
@@ -210,7 +216,7 @@ export default new Vuex.Store({
       commit('setCurrentPosition', position);
       commit('setPossibleMoviments', getPossibleMovements(position));
     },
-    addCharacter({commit}, payload: {character: number, position: number}) {
+    addCharacter({commit}, payload: {character: number, position: number, weight?: number}) {
       commit('setCharacter', payload);
     },
     addItem({commit}, payload: {item: number, position: number, weight: number}) {
@@ -314,14 +320,15 @@ export default new Vuex.Store({
             dispatch("updateScore", {points: 1, flag: "take-brain", logMessage: "at least trying"});
             break;
           case characters.Coruja:
-            if (this.state.playerStatus.capacity >= 2) {
+            const owlWeight = this.state.gameObjects.characters[characters.Coruja].weight;
+            if (this.state.playerStatus.capacity >= owlWeight) {
               message = `The ${action.object.name} is now in your inventory.`;
               if (!this.state.status.scoreFlags.includes("take-owl")) {
                 dispatch("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
               }
               commit("addToInventory", { id: characters.Coruja, name: action.object.name, type: "character" });
-              commit("updateCharacter", { character: characters.Coruja, position: -1, health: this.state.gameObjects.characters[characters.Coruja].health});
-              commit("setPlayerCapacity", this.state.playerStatus.capacity -= 2);
+              commit("updateCharacter", { character: characters.Coruja, position: -1 });
+              commit("setPlayerCapacity", this.state.playerStatus.capacity -= owlWeight);
               dispatch("updateScore", {points: 10, flag: "take-owl", logMessage: "catching the Owl"});
             } else {
               message = `The ${action.object.name} is too heavy for you to carry right now`;
@@ -347,14 +354,14 @@ export default new Vuex.Store({
     },
     executeDrop({commit}, action: action) {
       const itemIndex = this.state.playerStatus.inventory.findIndex((item) => JSON.stringify(item) == JSON.stringify(action.object));
+      const owlWeight = this.state.gameObjects.characters[characters.Coruja].weight;
       if (itemIndex != -1) commit("removeFromInventory", itemIndex);
       if (action.object.type == "character") {
         commit("updateCharacter", {
           character: characters.Coruja,
-          position: this.state.playerStatus.currentPosition,
-          health: this.state.gameObjects.characters[characters.Coruja].health
+          position: this.state.playerStatus.currentPosition
         });
-        commit("setPlayerCapacity", this.state.playerStatus.capacity += 2);
+        commit("setPlayerCapacity", this.state.playerStatus.capacity += owlWeight);
         return;
       }
       const itemWeight = Number(this.state.gameObjects.items[action.object.id].weight);
@@ -364,7 +371,6 @@ export default new Vuex.Store({
     executeUse({commit, dispatch}, action: action) {
       const bookWord = this.state.gameObjects.currentWords.book;
       const characterNames = process.env.VUE_APP_CHARACTERS.split(", ");
-      const itemsNames = process.env.VUE_APP_ITEMS.split(", ");
 
       if (action.object.type == "character") {
         dispatch("openAlert", { open: true, message: `You can't use the ${characterNames[action.object.id]} `});
@@ -393,10 +399,10 @@ export default new Vuex.Store({
         case items.Espada:
         case items.AsaDelta:
         case items.Mascara:
-          dispatch("openAlert", { open: true, message: `You are already using the ${itemsNames[action.object.id]} `});
+          dispatch("openAlert", { open: true, message: `You are already using the ${action.object.name} `});
           break;
         default:
-          dispatch("openAlert", { open: true, message: `You can't use the ${itemsNames[action.object.id]} `});
+          dispatch("openAlert", { open: true, message: `You can't use the ${action.object.name} `});
           break;
       }
     },
@@ -410,12 +416,26 @@ export default new Vuex.Store({
             dispatch("executeHipnotize");
           }
           break;
+        case items.Cera:
+          if (action.onObject?.type == "character" && this.state.gameObjects.characters[action.onObject?.id].weight != 0) {
+            commit("updateCharacter", { character: action.onObject?.id, weight: 0 });
+            dispatch("openAlert", { open: true, message: `The ${action.onObject?.name} has no weight anymore!`, subMessage: "How that happened anyway?!" });
+            dispatch("updateScore", {points: 5, flag: "use-wax", logMessage: "using the most weird object of the game"});
+            return;
+          }
+          if (action.onObject?.type == "item" && this.state.gameObjects.items[action.onObject?.id].weight != 0) {
+            commit ("updateItem", {item: action.onObject?.id, weight: 0 });
+            dispatch("openAlert", { open: true, message: `The ${action.onObject?.name} has no weight anymore!`, subMessage: "How that happened anyway?!" });
+            dispatch("updateScore", {points: 5, flag: "use-wax", logMessage: "using the most weird object of the game"});
+            return;
+          } 
+          dispatch("openAlert", { open: true, message: `The ${action.object?.name} has no effect...`});        
+          break;
         default:
           dispatch("openAlert", { open: true, message: `The ${action.onObject?.name} has no effect...`});
       }
     },
     executeHipnotize({commit, dispatch}) {
-
       console.log("Try to hipnotize the sorcerer");
     },
   },

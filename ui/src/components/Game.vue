@@ -91,6 +91,7 @@ import characters from "@/models/characters";
 export default class Game extends Vue {
   private places = process.env.VUE_APP_PLACES.split(", ");
   private itemsWeight = process.env.VUE_APP_ITEMS_WEIGHT.split(", ");
+  private charactersWeight = process.env.VUE_APP_CHARACTERS_WEIGHT.split(", ");
   private words = process.env.VUE_APP_WORDS.split(", ");
   private shout = "";
 
@@ -118,6 +119,7 @@ export default class Game extends Vue {
     this.$store.dispatch("addCharacter", {
       character: characters.Coruja,
       position: this.randomBetween(0, this.places.length - 2),
+      weight: Number(this.charactersWeight[characters.Coruja]),
     });
     // Add Items
     for (let i = 1; i <= 10; i++) {

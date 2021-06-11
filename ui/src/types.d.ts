@@ -10,6 +10,7 @@ export interface character {
   position: number,
   health: number,
   maxHealth: number,
+  weight?: number,
 }
 
 export interface item {
@@ -17,7 +18,7 @@ export interface item {
   position: number,
   withPlayer: boolean,
   health?: number,
-  weight?: number
+  weight?: number,
 }
 
 export interface action {

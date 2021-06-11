@@ -302,7 +302,9 @@ export default new Vuex.Store({
           case characters.Coruja:
             if (this.state.playerStatus.capacity >= 2) {
               message = `The ${action.object.name} is now in your inventory.`;
-              dispatch("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
+              if (!this.state.status.scoreFlags.includes("take-owl")) {
+                dispatch("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
+              }
               commit("addToInventory", { id: characters.Coruja, name: action.object.name, type: "character" });
               commit("updateCharacter", { character: characters.Coruja, position: -1, health: this.state.gameObjects.characters[characters.Coruja].health});
               commit("setPlayerCapacity", this.state.playerStatus.capacity -= 2);
@@ -330,11 +332,20 @@ export default new Vuex.Store({
       }
     },
     executeDrop({commit}, action: action) {
+      const itemIndex = this.state.playerStatus.inventory.findIndex((item) => JSON.stringify(item) == JSON.stringify(action.object));
+      if (itemIndex != -1) commit("removeFromInventory", itemIndex);
+      if (action.object.type == "character") {
+        commit("updateCharacter", {
+          character: characters.Coruja,
+          position: this.state.playerStatus.currentPosition,
+          health: this.state.gameObjects.characters[characters.Coruja].health
+        });
+        commit("setPlayerCapacity", this.state.playerStatus.capacity += 2);
+        return;
+      }
       const itemWeight = Number(this.state.gameObjects.items[action.object.id].weight);
       commit("setPlayerCapacity", this.state.playerStatus.capacity += itemWeight);
       commit ("updateItem", {item: action.object.id, position: this.state.playerStatus.currentPosition, withPlayer: false} );
-      const itemIndex = this.state.playerStatus.inventory.findIndex((item) => JSON.stringify(item) == JSON.stringify(action.object));
-      if (itemIndex != -1) commit("removeFromInventory", itemIndex);
     }
   },
   modules: {},

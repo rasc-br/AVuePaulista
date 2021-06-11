@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { character, item } from "@/types";
+import { character, gameObject, item } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({
@@ -54,7 +54,7 @@ export default class Inventory extends Vue {
     return this.$store.state.status.lastAction.status;
   }
 
-  action(object: character | item): void {
+  action(object: gameObject): void {
     const validInventoryActions = ["drop", "use"];
     if (
       !validInventoryActions.includes(
@@ -77,10 +77,11 @@ export default class Inventory extends Vue {
         action: this.$store.state.status.lastAction.action,
         object: {
           id: object.id,
-          name: object.health
-            ? this.characters[object.id]
-            : this.items[object.id],
-          type: object.health ? "character" : "item",
+          name:
+            object.type == "character"
+              ? this.characters[object.id]
+              : this.items[object.id],
+          type: object.type,
         },
         status: "end",
       });

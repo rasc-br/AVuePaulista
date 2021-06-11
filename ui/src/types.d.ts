@@ -21,8 +21,9 @@ export interface item {
 }
 
 export interface action {
-  action: "take" | "shout" | "attack" | "use" | "drop" | "",
+  action: "take" | "shout" | "attack" | "use" | "drop" | "useOn" | "",
   object: gameObject,
+  onObject?: gameObject,
   status: "start" | "end" | "cancel",
 }
 

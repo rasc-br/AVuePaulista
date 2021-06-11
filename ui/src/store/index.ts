@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Vuex, { Store } from "vuex";
+import Vuex from "vuex";
 import positions from '@/models/positions';
 import characters from '@/models/characters';
 import items from '@/models/items';
@@ -69,6 +69,7 @@ export default new Vuex.Store({
       scoreFlags: [""],
       witchInvoke: false,
       convertedDemon: false,
+      convertedSorcerer: false,
     },
     playerStatus: {
       currentPosition: -1,
@@ -159,6 +160,9 @@ export default new Vuex.Store({
     setDemonConversion(state, flag: boolean):void {
       state.status.convertedDemon = flag;
     },
+    setSorcererConversion(state, flag: boolean):void {
+      state.status.convertedSorcerer = flag;
+    },
     addLogEntry(state, log: string):void {
       state.status.log.push(humanizeLog(log));
     },
@@ -221,12 +225,15 @@ export default new Vuex.Store({
       if (payload.status == "end" || payload.action == "shout") dispatch('executeAction', payload);
     },
     updateLog({commit}, payload: action) {
-      if (payload.status == "end") commit('updateLastLogEntry', payload.object.name);
+      const lastAction = this.state.status.lastAction;
+      if (payload.status == "end") {
+        commit('updateLastLogEntry', lastAction.action=="useOn" ? payload.onObject?.name : payload.object.name);
+      }
       if (payload.status == "start") {
-        if (this.state.status.lastAction.status == "start") commit('removeLogEntry');
+        if (lastAction.status == "start") commit('removeLogEntry');
         commit('addLogEntry', payload.action);
       } 
-      if (payload.status == "cancel" && this.state.status.lastAction.status=="start") commit('removeLogEntry');
+      if (payload.status == "cancel" && (lastAction.status=="start" || lastAction.action=="useOn")) commit('removeLogEntry');
       commit('setLastAction', payload);
     },
     executeAction({dispatch}, payload: action) {
@@ -243,6 +250,9 @@ export default new Vuex.Store({
           break;
         case "use":
           dispatch("executeUse", payload);
+          break;
+        case "useOn":
+          dispatch("executeUseOn", payload);
           break;
         default:
           break;
@@ -351,7 +361,7 @@ export default new Vuex.Store({
       commit("setPlayerCapacity", this.state.playerStatus.capacity += itemWeight);
       commit ("updateItem", {item: action.object.id, position: this.state.playerStatus.currentPosition, withPlayer: false} );
     },
-    executeUse({dispatch}, action: action) {
+    executeUse({commit, dispatch}, action: action) {
       const bookWord = this.state.gameObjects.currentWords.book;
       const characterNames = process.env.VUE_APP_CHARACTERS.split(", ");
       const itemsNames = process.env.VUE_APP_ITEMS.split(", ");
@@ -362,25 +372,21 @@ export default new Vuex.Store({
       }
       switch (action.object.id) {
         case items.Livro:
-          dispatch("openAlert", { open: true, message: `...convert the ${characterNames[characters.Demonio]} with ${bookWord}.`, subMessage: "Among a lot of other things, of course" });
+          dispatch("openAlert", { open: true, message: `...convert the ${characterNames[characters.Demonio]} with ${bookWord}.`});
           dispatch("updateScore", {points: 5, flag: "book-word", logMessage: "reading a nice book"});
           break;
         case items.Hipnodisco:
-
-          break;
         case items.Cera:
-
+        case items.KitBomba:
+        case items.SetaMortal:
+          commit('updateLastLogEntry', ' on ');
+          action.action = "useOn";
+          commit('setLastAction', action);
           break;
         case items.Luneta:
 
           break;
-        case items.KitBomba:
-
-          break; 
         case items.KitSaude:
-
-          break;  
-        case items.SetaMortal:
 
           break;
         case items.Escudo:
@@ -393,6 +399,24 @@ export default new Vuex.Store({
           dispatch("openAlert", { open: true, message: `You can't use the ${itemsNames[action.object.id]} `});
           break;
       }
+    },
+    executeUseOn({commit, dispatch}, action: action) {
+      let lastAction = this.state.status.lastAction;
+      lastAction.action = "use";
+      commit('setLastAction', lastAction);
+      switch (action.object.id) {
+        case items.Hipnodisco:
+          if (action.onObject?.type == "character" && action.onObject?.id == characters.Feiticeiro) {
+            dispatch("executeHipnotize");
+          }
+          break;
+        default:
+          dispatch("openAlert", { open: true, message: `The ${action.onObject?.name} has no effect...`});
+      }
+    },
+    executeHipnotize({commit, dispatch}) {
+
+      console.log("Try to hipnotize the sorcerer");
     },
   },
   modules: {},

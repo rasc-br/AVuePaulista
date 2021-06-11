@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { character, item } from "@/types";
+import { action, character, item } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({
@@ -53,15 +53,13 @@ export default class Room extends Vue {
     });
   }
 
-  get lastAction(): string {
-    return this.$store.state.status.lastAction.status;
+  get lastAction(): action {
+    return this.$store.state.status.lastAction;
   }
 
   action(object: character | item): void {
-    const validRoomActions = ["attack", "take"];
-    if (
-      !validRoomActions.includes(this.$store.state.status.lastAction.action)
-    ) {
+    const validRoomActions = ["attack", "take", "useOn"];
+    if (!validRoomActions.includes(this.lastAction.action)) {
       this.$store.dispatch("addAction", {
         action: "",
         object: {
@@ -73,9 +71,9 @@ export default class Room extends Vue {
       });
       return;
     }
-    if (this.lastAction == "start") {
+    if (this.lastAction.status == "start") {
       this.$store.dispatch("addAction", {
-        action: this.$store.state.status.lastAction.action,
+        action: this.lastAction.action,
         object: {
           id: object.id,
           name: object.health
@@ -85,6 +83,22 @@ export default class Room extends Vue {
         },
         status: "end",
       });
+      return;
+    }
+    if (this.lastAction.action == "useOn") {
+      this.$store.dispatch("addAction", {
+        action: this.lastAction.action,
+        object: this.lastAction.object,
+        onObject: {
+          id: object.id,
+          name: object.health
+            ? this.characters[object.id]
+            : this.items[object.id],
+          type: object.health ? "character" : "item",
+        },
+        status: "end",
+      });
+      return;
     }
   }
 }

@@ -3,7 +3,7 @@ import Vuex, { Store } from "vuex";
 import positions from '@/models/positions';
 import characters from '@/models/characters';
 import items from '@/models/items';
-import { action } from "@/types";
+import { action, gameObject } from "@/types";
 
 Vue.use(Vuex);
 
@@ -77,7 +77,7 @@ export default new Vuex.Store({
       maxHealth: 10,
       capacity: 8,
       points: 0,
-      inventory: [] as {id: number, type: string}[],
+      inventory: [] as gameObject[],
       name: "rasc",
     },
     gameObjects: {
@@ -185,8 +185,11 @@ export default new Vuex.Store({
     setShout(state, shoutDialog: {open: boolean, message: string}):void {
       state.shoutDialog = shoutDialog;
     },
-    addToInventory(state, object: {id: number, type: string}):void {
+    addToInventory(state, object: gameObject):void {
       state.playerStatus.inventory.push(object);
+    },
+    removeFromInventory(state, index: number):void {
+      state.playerStatus.inventory.splice(index, 1);
     },
     setScore(state, points: number):void {
       state.playerStatus.points += points;
@@ -233,6 +236,9 @@ export default new Vuex.Store({
           break;
         case "shout":
           dispatch("triggerShoutDialog", { open: true, message: "" });
+          break;
+        case "drop":
+          dispatch("executeDrop", payload);
           break;
         default:
           break;
@@ -297,7 +303,7 @@ export default new Vuex.Store({
             if (this.state.playerStatus.capacity >= 2) {
               message = `The ${action.object.name} is now in your inventory.`;
               dispatch("openAlert", { open: true, message, subMessage: "Wow, I didn't know you could take the Owl!"});
-              commit("addToInventory", { id: characters.Coruja, type: "character" });
+              commit("addToInventory", { id: characters.Coruja, name: action.object.name, type: "character" });
               commit("updateCharacter", { character: characters.Coruja, position: -1, health: this.state.gameObjects.characters[characters.Coruja].health});
               commit("setPlayerCapacity", this.state.playerStatus.capacity -= 2);
               dispatch("updateScore", {points: 10, flag: "take-owl", logMessage: "catching the Owl"});
@@ -316,13 +322,20 @@ export default new Vuex.Store({
         if (this.state.playerStatus.capacity >= itemWeight) {
           commit("setPlayerCapacity", this.state.playerStatus.capacity -= itemWeight);
           commit ("updateItem", {item: action.object.id, position: -1, withPlayer: true} );
-          commit("addToInventory", { id: action.object.id, type: "item" });
+          commit("addToInventory", { id: action.object.id, name: action.object.name, type: "item" });
         } else {
           dispatch("openAlert", { open: true, message: `The ${action.object.name} is too heavy for you to carry right now` });
           commit('addLogEntry', `The ${action.object.name} is too heavy for you to carry right now`);
         }
       }
     },
+    executeDrop({commit}, action: action) {
+      const itemWeight = Number(this.state.gameObjects.items[action.object.id].weight);
+      commit("setPlayerCapacity", this.state.playerStatus.capacity += itemWeight);
+      commit ("updateItem", {item: action.object.id, position: this.state.playerStatus.currentPosition, withPlayer: false} );
+      const itemIndex = this.state.playerStatus.inventory.findIndex((item) => JSON.stringify(item) == JSON.stringify(action.object));
+      if (itemIndex != -1) commit("removeFromInventory", itemIndex);
+    }
   },
   modules: {},
 });

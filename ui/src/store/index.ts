@@ -230,6 +230,7 @@ export default new Vuex.Store({
       commit('setLastAction', payload);
     },
     executeAction({dispatch}, payload: action) {
+      dispatch ("addMinutes", 5);
       switch (payload.action) {
         case "take":
           dispatch ("executeTake", payload);
@@ -239,6 +240,9 @@ export default new Vuex.Store({
           break;
         case "drop":
           dispatch("executeDrop", payload);
+          break;
+        case "use":
+          dispatch("executeUse", payload);
           break;
         default:
           break;
@@ -346,7 +350,50 @@ export default new Vuex.Store({
       const itemWeight = Number(this.state.gameObjects.items[action.object.id].weight);
       commit("setPlayerCapacity", this.state.playerStatus.capacity += itemWeight);
       commit ("updateItem", {item: action.object.id, position: this.state.playerStatus.currentPosition, withPlayer: false} );
-    }
+    },
+    executeUse({dispatch}, action: action) {
+      const bookWord = this.state.gameObjects.currentWords.book;
+      const characterNames = process.env.VUE_APP_CHARACTERS.split(", ");
+      const itemsNames = process.env.VUE_APP_ITEMS.split(", ");
+
+      if (action.object.type == "character") {
+        dispatch("openAlert", { open: true, message: `You can't use the ${characterNames[action.object.id]} `});
+        return;
+      }
+      switch (action.object.id) {
+        case items.Livro:
+          dispatch("openAlert", { open: true, message: `...convert the ${characterNames[characters.Demonio]} with ${bookWord}.`, subMessage: "Among a lot of other things, of course" });
+          dispatch("updateScore", {points: 5, flag: "book-word", logMessage: "reading a nice book"});
+          break;
+        case items.Hipnodisco:
+
+          break;
+        case items.Cera:
+
+          break;
+        case items.Luneta:
+
+          break;
+        case items.KitBomba:
+
+          break; 
+        case items.KitSaude:
+
+          break;  
+        case items.SetaMortal:
+
+          break;
+        case items.Escudo:
+        case items.Espada:
+        case items.AsaDelta:
+        case items.Mascara:
+          dispatch("openAlert", { open: true, message: `You are already using the ${itemsNames[action.object.id]} `});
+          break;
+        default:
+          dispatch("openAlert", { open: true, message: `You can't use the ${itemsNames[action.object.id]} `});
+          break;
+      }
+    },
   },
   modules: {},
 });

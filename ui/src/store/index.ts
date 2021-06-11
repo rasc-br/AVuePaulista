@@ -414,6 +414,8 @@ export default new Vuex.Store({
         case items.Hipnodisco:
           if (action.onObject?.type == "character" && action.onObject?.id == characters.Feiticeiro) {
             dispatch("executeHipnotize");
+          } else {
+            dispatch("openAlert", { open: true, message: `The ${action.object?.name} has no effect...`});
           }
           break;
         case items.Cera:
@@ -431,12 +433,30 @@ export default new Vuex.Store({
           } 
           dispatch("openAlert", { open: true, message: `The ${action.object?.name} has no effect...`});        
           break;
+        case items.KitBomba:
+          if (action.onObject?.type == "item" && (action.onObject?.id == items.BombaDeGas || action.onObject?.id == items.Bomba)) {
+            dispatch("defuseBomb");
+          } else {
+            dispatch("openAlert", { open: true, message: `The ${action.object?.name} has no effect...`});
+          }
+          break;
+        case items.SetaMortal:
+          if (action.onObject?.type == "character") {
+            dispatch("updateScore", {points: 5, flag: "use-death-arrow", logMessage: "using the most deadly object of the game"});
+            console.log("Using seta mortal");
+          } else {
+            dispatch("openAlert", { open: true, message: `You can't attack ${action.onObject?.name}`});
+          }
+          break;
         default:
           dispatch("openAlert", { open: true, message: `The ${action.onObject?.name} has no effect...`});
       }
     },
     executeHipnotize({commit, dispatch}) {
       console.log("Try to hipnotize the sorcerer");
+    },
+    defuseBomb({commit, dispatch}) {
+      console.log("Try to defuse a bomb");
     },
   },
   modules: {},

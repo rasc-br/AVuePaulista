@@ -4,9 +4,11 @@ import positions from '@/models/positions';
 import characters from '@/models/characters';
 import items from '@/models/items';
 import { action, gameObject } from "@/types";
+import helpers from "@/helpers/globalMixins";
 
 Vue.use(Vuex);
 
+const randomBetween: Function = (helpers as any).extendOptions.methods.randomBetween;
 const getPossibleMovements = (position: number): number[] => {
   switch (position) {
     case positions.AlSantos:
@@ -204,6 +206,9 @@ export default new Vuex.Store({
     setScore(state, points: number):void {
       state.playerStatus.points += points;
     },
+    updatePlayerHealth(state, newHealth: number): void {
+      state.playerStatus.health = newHealth;
+    },
     addFlag(state, flag: string):void {
       state.status.scoreFlags.push(flag);
     },
@@ -393,7 +398,16 @@ export default new Vuex.Store({
 
           break;
         case items.KitSaude:
-
+          const maxHealth = this.state.playerStatus.maxHealth;
+          if (this.state.playerStatus.health < maxHealth) {
+            const recover = randomBetween(0, 2);
+            const newHealth = recover + this.state.playerStatus.health;
+            commit("updatePlayerHealth", newHealth > maxHealth ? maxHealth : newHealth);
+            dispatch("openAlert", { open: true, message: `You recovered ${recover} points of health`});
+            if (recover == 2) dispatch("updateScore", {points: 5, flag: "recover-two", logMessage: "having luck on your recovery"});
+          } else {
+            dispatch("openAlert", { open: true, message: `You are already on full health`});
+          }
           break;
         case items.Escudo:
         case items.Espada:

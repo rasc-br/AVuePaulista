@@ -21,6 +21,7 @@
       <div class="col-6 flex flex-center"><Status /></div>
     </div>
     <!-- DIALOGS -->
+    <!-- ALERT DIALOG -->
     <q-dialog v-model="alert.open">
       <q-card>
         <q-card-section>
@@ -31,6 +32,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <!-- SHOUT DIALOG -->
     <q-dialog v-model="shoutDialog.open" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
@@ -60,12 +62,19 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- SPYGLASS DIALOG -->
     <q-dialog v-model="spyglassDialog.open">
       <q-card class="spyglass">
         <q-card-section>
           <div class="text-h6 message">{{ spyglassDialog.message }}</div>
           <Spyglass :positionId="spyglassDialog.positionId" />
         </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!-- ATTACK DIALOG -->
+    <q-dialog v-model="attackDialog.open">
+      <q-card>
+        <Attack />
       </q-card>
     </q-dialog>
   </q-page>
@@ -83,6 +92,7 @@ import Status from "@/components/Status.vue";
 import PlayerStatus from "@/components/PlayerStatus.vue";
 import characters from "@/models/characters";
 import Spyglass from "@/components/Spyglass.vue";
+import Attack from "@/components/Attack.vue";
 
 @Component({
   name: "Game",
@@ -96,6 +106,7 @@ import Spyglass from "@/components/Spyglass.vue";
     Status,
     PlayerStatus,
     Spyglass,
+    Attack,
   },
 })
 export default class Game extends Vue {
@@ -118,7 +129,9 @@ export default class Game extends Vue {
   get spyglassDialog(): { open: boolean; message: string } {
     return this.$store.state.spyglassDialog;
   }
-
+  get attackDialog(): { open: boolean } {
+    return this.$store.state.attackDialog;
+  }
   populateGame(): void {
     // Add Characters
     this.$store.dispatch("addCharacter", {

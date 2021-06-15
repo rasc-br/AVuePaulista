@@ -132,6 +132,9 @@ export default new Vuex.Store({
       message: "",
       positionId: -1
     },
+    attackDialog: {
+      open: false,
+    },
   },
   mutations: {
     setMinutes(state, minutes: number):void {
@@ -206,6 +209,9 @@ export default new Vuex.Store({
     setSpyglassVision(state, spyglassDialog: {open: boolean, message: string, positionId: number}):void {
       state.spyglassDialog = spyglassDialog;
     },
+    setAttackDialog(state, payload: {open: boolean}):void {
+      state.attackDialog = payload;
+    },
     addToInventory(state, object: gameObject):void {
       state.playerStatus.inventory.push(object);
     },
@@ -273,6 +279,9 @@ export default new Vuex.Store({
           break;
         case "useOn":
           dispatch("executeUseOn", payload);
+          break;
+        case "attack":
+          dispatch("executeAttack", payload);
           break;
         default:
           break;
@@ -368,6 +377,13 @@ export default new Vuex.Store({
           commit('addLogEntry', `The ${action.object.name} is too heavy for you to carry right now`);
         }
       }
+    },
+    executeAttack({commit, dispatch}, action: action) {
+      if (action.object.type != "character") {
+        dispatch("openAlert", { open: true, message: `You can't attack that!`});
+        return;
+      }
+      commit("setAttackDialog", {open: true});
     },
     executeDrop({commit}, action: action) {
       const itemIndex = this.state.playerStatus.inventory.findIndex((item) => JSON.stringify(item) == JSON.stringify(action.object));
@@ -479,7 +495,6 @@ export default new Vuex.Store({
           } else {
             dispatch("openAlert", { open: true, message: `You must use it in a place`});
           }
-          
           break;
         default:
           dispatch("openAlert", { open: true, message: `The ${action.object?.name} has no effect...`});

@@ -120,12 +120,18 @@ export default new Vuex.Store({
     },
     alert: {
       open: false,
-      message: ""
+      message: "",
+      subMessage: "",
     },
     shoutDialog: {
       open: false,
       message: ""
-    }
+    },
+    spyglassDialog: {
+      open: false,
+      message: "",
+      positionId: -1
+    },
   },
   mutations: {
     setMinutes(state, minutes: number):void {
@@ -191,11 +197,14 @@ export default new Vuex.Store({
       if (payload.withPlayer === true || payload.withPlayer === false) Vue.set(state.gameObjects.items[payload.item], 'withPlayer', payload.withPlayer);
       if (payload.weight || payload.weight == 0) Vue.set(state.gameObjects.items[payload.item], 'weight', payload.weight);
     },
-    setAlert(state, alert: {open: boolean, message: string}):void {
+    setAlert(state, alert: {open: boolean, message: string, subMessage: string}):void {
       state.alert = alert;
     },
     setShout(state, shoutDialog: {open: boolean, message: string}):void {
       state.shoutDialog = shoutDialog;
+    },
+    setSpyglassVision(state, spyglassDialog: {open: boolean, message: string, positionId: number}):void {
+      state.spyglassDialog = spyglassDialog;
     },
     addToInventory(state, object: gameObject):void {
       state.playerStatus.inventory.push(object);
@@ -271,6 +280,9 @@ export default new Vuex.Store({
     },
     openAlert({commit},  alert: {open: boolean, message: string}) {
       commit('setAlert', alert);
+    },
+    openSpyglassDialog({commit},  spyglassDialog: {open: boolean, message: string, positionId: number}) {
+      commit('setSpyglassVision', spyglassDialog);
     },
     triggerShoutDialog({commit, dispatch},  shoutDialog: {open: boolean, message: string}) {
       commit('setShout', shoutDialog);
@@ -390,12 +402,10 @@ export default new Vuex.Store({
         case items.Cera:
         case items.KitBomba:
         case items.SetaMortal:
+        case items.Luneta:
           commit('updateLastLogEntry', ' on ');
           action.action = "useOn";
           commit('setLastAction', action);
-          break;
-        case items.Luneta:
-
           break;
         case items.KitSaude:
           const maxHealth = this.state.playerStatus.maxHealth;
@@ -442,7 +452,7 @@ export default new Vuex.Store({
           if (action.onObject?.type == "item" && this.state.gameObjects.items[action.onObject?.id].weight != 0) {
             commit ("updateItem", {item: action.onObject?.id, weight: 0 });
             dispatch("openAlert", { open: true, message: `The ${action.onObject?.name} has no weight anymore!`, subMessage: "How that happened anyway?!" });
-            dispatch("updateScore", {points: 5, flag: "use-wax", logMessage: "using the most weird object of the game"});
+            dispatch("updateScore", {points: 5, flag: "use-wax", logMessage: "using the most weird object in game"});
             return;
           } 
           dispatch("openAlert", { open: true, message: `The ${action.object?.name} has no effect...`});        
@@ -456,14 +466,23 @@ export default new Vuex.Store({
           break;
         case items.SetaMortal:
           if (action.onObject?.type == "character") {
-            dispatch("updateScore", {points: 5, flag: "use-death-arrow", logMessage: "using the most deadly object of the game"});
+            dispatch("updateScore", {points: 5, flag: "use-death-arrow", logMessage: "using the most deadly object in game"});
             console.log("Using seta mortal");
           } else {
             dispatch("openAlert", { open: true, message: `You can't attack ${action.onObject?.name}`});
           }
           break;
+        case items.Luneta:
+          if (action.onObject?.type == "position") {
+            dispatch("openSpyglassDialog", { open: true, message: `You see:`, positionId: action.onObject?.id});
+            dispatch("updateScore", {points: 5, flag: "use-spyglass", logMessage: "using the most useless object in game"});
+          } else {
+            dispatch("openAlert", { open: true, message: `You must use it in a place`});
+          }
+          
+          break;
         default:
-          dispatch("openAlert", { open: true, message: `The ${action.onObject?.name} has no effect...`});
+          dispatch("openAlert", { open: true, message: `The ${action.object?.name} has no effect...`});
       }
     },
     executeHipnotize({commit, dispatch}) {

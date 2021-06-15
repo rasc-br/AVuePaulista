@@ -31,7 +31,7 @@ export interface action {
 export interface gameObject {
   id: number,
   name: string,
-  type: "item" | "character",
+  type: "item" | "character" | "position",
 }
 
 export interface playerStatus {

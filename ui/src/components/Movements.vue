@@ -17,7 +17,9 @@
           align="between"
           rounded
           class="to-go-place"
-          @click="movePlayer(place)"
+          @click="
+            lastAction.action == 'useOn' ? useObject(place) : movePlayer(place)
+          "
         >
           <q-icon class="explore" left size="2em" name="explore" />
           <div>{{ places[place] }}</div>
@@ -28,6 +30,7 @@
 </template>
 
 <script lang="ts">
+import { action } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({
@@ -41,6 +44,9 @@ export default class Movements extends Vue {
   get currentPosition(): number {
     return this.$store.state.playerStatus.currentPosition;
   }
+  get lastAction(): action {
+    return this.$store.state.status.lastAction;
+  }
   created(): void {
     // Game Requirement: Player cannot start on "Céu"(sky) or "Teto do MASP"(End stage)
     const maxPosition = this.places.length - 3;
@@ -53,6 +59,19 @@ export default class Movements extends Vue {
   movePlayer(place: number): void {
     this.$store.dispatch("updatePlayerPosition", place);
     this.$store.dispatch("addMinutes", this.randomBetween(10, 20));
+  }
+  useObject(place: number): void {
+    this.$store.dispatch("addAction", {
+      action: this.lastAction.action,
+      object: this.lastAction.object,
+      onObject: {
+        id: place,
+        name: this.places[place],
+        type: "position",
+      },
+      status: "end",
+    });
+    return;
   }
 }
 </script>

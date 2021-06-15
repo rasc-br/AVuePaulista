@@ -60,6 +60,14 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="spyglassDialog.open">
+      <q-card class="spyglass">
+        <q-card-section>
+          <div class="text-h6 message">{{ spyglassDialog.message }}</div>
+          <Spyglass :positionId="spyglassDialog.positionId" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -74,6 +82,7 @@ import Inventory from "@/components/Inventory.vue";
 import Status from "@/components/Status.vue";
 import PlayerStatus from "@/components/PlayerStatus.vue";
 import characters from "@/models/characters";
+import Spyglass from "@/components/Spyglass.vue";
 
 @Component({
   name: "Game",
@@ -86,6 +95,7 @@ import characters from "@/models/characters";
     Inventory,
     Status,
     PlayerStatus,
+    Spyglass,
   },
 })
 export default class Game extends Vue {
@@ -104,6 +114,9 @@ export default class Game extends Vue {
   }
   get shoutDialog(): { open: boolean; message: string } {
     return this.$store.state.shoutDialog;
+  }
+  get spyglassDialog(): { open: boolean; message: string } {
+    return this.$store.state.spyglassDialog;
   }
 
   populateGame(): void {
@@ -176,6 +189,13 @@ export default class Game extends Vue {
 }
 .message {
   text-align: center;
+}
+.spyglass {
+  border-radius: 50%;
+  width: 500px;
+  height: 500px;
+  border: double;
+  background-color: #ffe4c4;
 }
 .sub-message {
   text-align: center;

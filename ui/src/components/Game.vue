@@ -73,9 +73,7 @@
     </q-dialog>
     <!-- ATTACK DIALOG -->
     <q-dialog v-model="attackDialog.open">
-      <q-card>
-        <Attack />
-      </q-card>
+      <Attack />
     </q-dialog>
   </q-page>
 </template>

@@ -383,6 +383,7 @@ export default new Vuex.Store({
         dispatch("openAlert", { open: true, message: `You can't attack that!`});
         return;
       }
+      console.log(action);
       commit("setAttackDialog", {open: true});
     },
     executeDrop({commit}, action: action) {

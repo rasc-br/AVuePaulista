@@ -1,35 +1,37 @@
 <template>
   <div class="attack-view">
-    this is the attack view
-    <!-- <q-list>
-      <div v-for="object in gameObjects" :key="`${object.id}${object.health}`">
-        <q-item class="spyglass-object">
-          <q-item-section avatar>
-            <q-icon
-              :class="[
-                'side-icon',
-                object.health
-                  ? `icon-char-${object.id}`
-                  : `icon-item-${object.id}`,
-              ]"
-            />
-          </q-item-section>
-          <q-item-section v-if="object.health">
-            <q-item-label>{{ characters[object.id] }}</q-item-label>
-            <q-item-label caption
-              >{{ object.health }} / {{ object.maxHealth }}</q-item-label
-            >
-          </q-item-section>
-          <q-item-section v-else>
-            <q-item-label>{{ items[object.id] }}</q-item-label>
-          </q-item-section>
-        </q-item>
-      </div>
-    </q-list> -->
+    <q-card class="attacker-card">
+      <q-card-section class="centralized">
+        <q-icon :class="['object-icon', `icon-char-${attacker.id}`]" />
+      </q-card-section>
+      <q-card-section class="centralized">
+        <div class="text-h6">{{ attacker.name }}</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        uses something against...
+      </q-card-section>
+    </q-card>
+
+    <q-card class="middle-card"> ATTACKS </q-card>
+
+    <q-card class="defender-card">
+      <q-card-section class="centralized">
+        <q-icon :class="['object-icon', `icon-char-${defender.id}`]" />
+      </q-card-section>
+      <q-card-section class="centralized">
+        <div class="text-h6">{{ defender.name }}</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        uses something against...
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
 <script lang="ts">
+import { action, gameObject } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({
@@ -38,15 +40,46 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Attack extends Vue {
   private characters = process.env.VUE_APP_CHARACTERS.split(", ");
   private items = process.env.VUE_APP_ITEMS.split(", ");
+  private player: gameObject = {
+    id: -1,
+    name: this.$store.state.playerStatus.name,
+    type: "character",
+  };
+  get lastAction(): action {
+    return this.$store.state.status.lastAction;
+  }
+  get attacker(): gameObject {
+    return this.lastAction.onObject ? this.lastAction.object : this.player;
+  }
+  get defender(): gameObject {
+    return this.lastAction.onObject
+      ? this.lastAction.onObject
+      : this.lastAction.object;
+  }
 }
 </script>
 <style lang="scss" scoped>
 .attack-view {
+  display: flex;
   cursor: inherit !important;
+
+  .centralized {
+    display: flex;
+    justify-content: center;
+  }
+
+  .middle-card {
+    height: 40px;
+    padding: 10px;
+    margin: 0 10px;
+  }
 }
-.side-icon {
-  padding-left: 7px;
+
+.object-icon {
   font-size: 80px !important;
+  &.icon-char--1 {
+    content: url("../assets/masked.svg");
+  }
   &.icon-char-0 {
     content: url("../assets/witch2.svg");
   }

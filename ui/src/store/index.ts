@@ -383,7 +383,6 @@ export default new Vuex.Store({
         dispatch("openAlert", { open: true, message: `You can't attack that!`});
         return;
       }
-      console.log(action);
       commit("setAttackDialog", {open: true});
     },
     executeDrop({commit}, action: action) {
@@ -484,6 +483,7 @@ export default new Vuex.Store({
         case items.SetaMortal:
           if (action.onObject?.type == "character") {
             dispatch("updateScore", {points: 5, flag: "use-death-arrow", logMessage: "using the most deadly object in game"});
+            // TODO: Attack with Death Arrow
             console.log("Using seta mortal");
           } else {
             dispatch("openAlert", { open: true, message: `You can't attack ${action.onObject?.name}`});

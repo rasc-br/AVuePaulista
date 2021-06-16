@@ -4,12 +4,19 @@
       <q-card-section class="centralized">
         <q-icon :class="['object-icon', `icon-char-${attacker.id}`]" />
       </q-card-section>
+
       <q-card-section class="centralized">
         <div class="text-h6">{{ attacker.name }}</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        uses something against...
+        Attack power: {{ attacker.basicAttack }}
+      </q-card-section>
+
+      <q-card-section v-if="attacker.extraPower.attack" class="q-pt-none">
+        {{ attacker.extraPower.attack.name }} +{{
+          attacker.extraPower.attack.power
+        }}
       </q-card-section>
     </q-card>
 
@@ -19,49 +26,122 @@
       <q-card-section class="centralized">
         <q-icon :class="['object-icon', `icon-char-${defender.id}`]" />
       </q-card-section>
+
       <q-card-section class="centralized">
         <div class="text-h6">{{ defender.name }}</div>
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
-        uses something against...
+      <q-card-section v-if="defender.extraPower.defense" class="q-pt-none">
+        {{ defender.extraPower.defense.name }} +{{
+          defender.extraPower.defense.power
+        }}
       </q-card-section>
     </q-card>
   </div>
 </template>
 
 <script lang="ts">
-import { action, gameObject } from "@/types";
+import { action, extraPower, fighter, gameObject, power } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
+import items from "@/models/items";
 
 @Component({
   name: "Attack",
 })
 export default class Attack extends Vue {
-  private characters = process.env.VUE_APP_CHARACTERS.split(", ");
-  private items = process.env.VUE_APP_ITEMS.split(", ");
-  private player: gameObject = {
-    id: -1,
-    name: this.$store.state.playerStatus.name,
-    type: "character",
-  };
+  private charactersNames = process.env.VUE_APP_CHARACTERS.split(", ");
+  private itemsNames = process.env.VUE_APP_ITEMS.split(", ");
+  private basicAttacks =
+    process.env.VUE_APP_CHARACTERS_BASIC_ATTACK.split(", ");
+
   get lastAction(): action {
     return this.$store.state.status.lastAction;
   }
-  get attacker(): gameObject {
-    return this.lastAction.onObject ? this.lastAction.object : this.player;
+  get inventory(): gameObject[] {
+    return this.$store.state.playerStatus.inventory;
   }
-  get defender(): gameObject {
-    return this.lastAction.onObject
-      ? this.lastAction.onObject
-      : this.lastAction.object;
+  get swordAttack(): power | undefined {
+    const sword = this.inventory.find((object: gameObject) => {
+      return object.id == items.Espada;
+    });
+    return sword
+      ? {
+          id: items.Espada,
+          name: this.itemsNames[items.Espada],
+          power: process.env.VUE_APP_SWORD_ATTACK,
+        }
+      : undefined;
+  }
+  get shieldDefense(): power | undefined {
+    const shield = this.inventory.find((object: gameObject) => {
+      return object.id == items.Escudo;
+    });
+    return shield
+      ? {
+          id: items.Escudo,
+          name: this.itemsNames[items.Escudo],
+          power: process.env.VUE_APP_SHIELD_DEFENSE,
+        }
+      : undefined;
+  }
+  get attacker(): fighter {
+    if (!this.lastAction.onObject) return this.player;
+
+    const attackerCharacter: fighter = {
+      id: this.lastAction.object.id,
+      name: this.lastAction.object.name,
+      type: "character",
+      basicAttack: this.basicAttacks[this.lastAction.object.id],
+      extraPower: this.returnExtraPower(this.lastAction.object.id),
+    };
+
+    return attackerCharacter;
+  }
+  get defender(): fighter {
+    const first: fighter = {
+      id: this.lastAction.object.id,
+      name: this.lastAction.object.name,
+      type: "character",
+      basicAttack: this.basicAttacks[this.lastAction.object.id],
+      extraPower: this.returnExtraPower(this.lastAction.object.id),
+    };
+    const second: fighter | undefined = this.lastAction.onObject
+      ? this.lastAction.onObject.id == -1
+        ? this.player
+        : {
+            id: this.lastAction.object.id,
+            name: this.lastAction.object.name,
+            type: "character",
+            basicAttack: this.basicAttacks[this.lastAction.object.id],
+            extraPower: this.returnExtraPower(this.lastAction.object.id),
+          }
+      : undefined;
+    return second ? second : first;
+  }
+  get player(): fighter {
+    return {
+      id: -1,
+      name: this.$store.state.playerStatus.name,
+      type: "player",
+      basicAttack: process.env.VUE_APP_PLAYER_BASIC_ATTACK,
+      extraPower: this.returnExtraPower(-1),
+    };
+  }
+
+  returnExtraPower(characterId: number): extraPower {
+    switch (characterId) {
+      case -1:
+        return { attack: this.swordAttack, defense: this.shieldDefense };
+      default:
+        return { attack: undefined, defense: undefined };
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
 .attack-view {
   display: flex;
-  cursor: inherit !important;
+  box-shadow: none;
 
   .centralized {
     display: flex;
@@ -72,6 +152,11 @@ export default class Attack extends Vue {
     height: 40px;
     padding: 10px;
     margin: 0 10px;
+  }
+
+  .attacker-card,
+  .defender-card {
+    min-width: 225px;
   }
 }
 

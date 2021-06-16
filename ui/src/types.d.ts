@@ -34,6 +34,25 @@ export interface gameObject {
   type: "item" | "character" | "position",
 }
 
+export interface fighter {
+  id: number,
+  name: string,
+  type: "player" | "character",
+  basicAttack: number,
+  extraPower: extraPower,
+}
+
+export interface extraPower {
+  attack?: power,
+  defense?: power,
+}
+
+export interface power {
+  id: number;
+  name: string;
+  power: number;
+}
+
 export interface playerStatus {
   currentPosition: number,
   possibleMovements: number[],

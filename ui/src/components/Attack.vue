@@ -44,12 +44,12 @@
 import { action, extraPower, fighter, gameObject, power } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
 import items from "@/models/items";
+// import characters from "@/models/characters";
 
 @Component({
   name: "Attack",
 })
 export default class Attack extends Vue {
-  private charactersNames = process.env.VUE_APP_CHARACTERS.split(", ");
   private itemsNames = process.env.VUE_APP_ITEMS.split(", ");
   private basicAttacks =
     process.env.VUE_APP_CHARACTERS_BASIC_ATTACK.split(", ");
@@ -129,12 +129,41 @@ export default class Attack extends Vue {
   }
 
   returnExtraPower(characterId: number): extraPower {
-    switch (characterId) {
-      case -1:
-        return { attack: this.swordAttack, defense: this.shieldDefense };
-      default:
-        return { attack: undefined, defense: undefined };
+    if (characterId == -1) {
+      return { attack: this.swordAttack, defense: this.shieldDefense };
     }
+    let result: extraPower = { attack: undefined, defense: undefined };
+
+    const percentage: number =
+      process.env.VUE_APP_ATTACK_DEFENSE_PERCENTAGE_RATE || 0;
+    if (this.randomBetween(1, 100) > percentage) return result;
+
+    if (process.env[`VUE_APP_${characterId}_ATTACK_NAMES`]) {
+      const attackNames: string[] =
+        process.env[`VUE_APP_${characterId}_ATTACK_NAMES`].split(", ");
+      const attackPower: string[] =
+        process.env[`VUE_APP_${characterId}_ATTACK_VALUES`].split(", ");
+      const randomIndex = this.randomBetween(0, attackNames.length - 1);
+      result.attack = {
+        id: characterId,
+        name: attackNames[randomIndex],
+        power: Number(attackPower[randomIndex]),
+      };
+    }
+    if (process.env[`VUE_APP_${characterId}_DEFENSE_NAMES`]) {
+      const defenseNames: string[] =
+        process.env[`VUE_APP_${characterId}_DEFENSE_NAMES`].split(", ");
+      const defensePower: string[] =
+        process.env[`VUE_APP_${characterId}_DEFENSE_VALUES`].split(", ");
+      const randomIndex = this.randomBetween(0, defenseNames.length - 1);
+      result.defense = {
+        id: characterId,
+        name: defenseNames[randomIndex],
+        power: Number(defensePower[randomIndex]),
+      };
+    }
+
+    return result;
   }
 }
 </script>

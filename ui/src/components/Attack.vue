@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { action, extraPower, fighter, gameObject, power } from "@/types";
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Watch, Vue } from "vue-property-decorator";
 import items from "@/models/items";
 
 @Component({
@@ -143,13 +143,28 @@ export default class Attack extends Vue {
       10;
     const defensePower: number =
       Number(this.defender.extraPower.defense?.power || 0) * 10;
-    const diff: number = attackPower - defensePower;
+    const adjust = (defensePower ? 100 : 50) + attackPower ? 50 : 0;
+    const diff: number = attackPower - defensePower - adjust;
     const hit: number = this.randomBetween(diff, 100);
-    if (hit > 10 && hit <= 70) return 1;
+    if (hit > 20 && hit <= 70) return 1;
     if (hit > 70 && hit <= 99) return 2;
     if (hit == 100) return 3;
     return 0;
   }
+
+  @Watch("damage", {
+    immediate: true,
+  })
+  hitTarget(damage: number): void {
+    console.log(damage);
+    if (damage) {
+      this.$store.dispatch("causeDamage", {
+        characterId: this.defender.id,
+        damage,
+      });
+    }
+  }
+
   returnExtraPower(characterId: number): extraPower {
     if (characterId == -1) {
       return { attack: this.swordAttack, defense: this.shieldDefense };
@@ -208,8 +223,8 @@ export default class Attack extends Vue {
 
   .attacker-card,
   .defender-card {
-    min-width: 340px;
-    min-height: 360px;
+    width: 340px;
+    height: 360px;
     .bottom {
       position: absolute;
       bottom: 40px;

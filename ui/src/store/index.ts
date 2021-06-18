@@ -507,6 +507,13 @@ export default new Vuex.Store({
     defuseBomb({commit, dispatch}) {
       console.log("Try to defuse a bomb");
     },
+    causeDamage({commit, dispatch}, payload: { characterId: number, damage: number }) {
+      const characterNames = process.env.VUE_APP_CHARACTERS.split(", ");
+      commit('addLogEntry', `The ${characterNames[payload.characterId]} lost ${payload.damage} of health`);
+      if (payload.damage == 3) dispatch("updateScore", {points: 20, flag: "max-damage", logMessage: "using 100% of your power!"});
+      const newHealth: number = this.state.gameObjects.characters[payload.characterId].health - payload.damage;
+      commit('updateCharacter', { character: payload.characterId, health: newHealth < 0 ? 0 : newHealth });
+    },
   },
   modules: {},
 });

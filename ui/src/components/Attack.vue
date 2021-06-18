@@ -6,14 +6,17 @@
       </q-card-section>
 
       <q-card-section class="centralized">
-        <div class="text-h6">{{ attacker.name }}</div>
+        <div class="text-h5">{{ attacker.name }}</div>
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
+      <q-card-section class="q-pt-none text-h6">
         Attack power: {{ attacker.basicAttack }}
       </q-card-section>
 
-      <q-card-section v-if="attacker.extraPower.attack" class="q-pt-none">
+      <q-card-section
+        v-if="attacker.extraPower.attack"
+        class="q-pt-none text-h6"
+      >
         {{ attacker.extraPower.attack.name }} +{{
           attacker.extraPower.attack.power
         }}
@@ -27,14 +30,21 @@
         <q-icon :class="['object-icon', `icon-char-${defender.id}`]" />
       </q-card-section>
 
-      <q-card-section class="centralized">
-        <div class="text-h6">{{ defender.name }}</div>
+      <q-card-section class="centralized text-h6">
+        <div class="text-h5">{{ defender.name }}</div>
       </q-card-section>
 
-      <q-card-section v-if="defender.extraPower.defense" class="q-pt-none">
+      <q-card-section
+        v-if="defender.extraPower.defense"
+        class="q-pt-none text-h6"
+      >
         {{ defender.extraPower.defense.name }} +{{
           defender.extraPower.defense.power
         }}
+      </q-card-section>
+
+      <q-card-section class="float-right bottom">
+        Lost {{ damage }} of health
       </q-card-section>
     </q-card>
   </div>
@@ -44,7 +54,6 @@
 import { action, extraPower, fighter, gameObject, power } from "@/types";
 import { Component, Vue } from "vue-property-decorator";
 import items from "@/models/items";
-// import characters from "@/models/characters";
 
 @Component({
   name: "Attack",
@@ -127,7 +136,20 @@ export default class Attack extends Vue {
       extraPower: this.returnExtraPower(-1),
     };
   }
-
+  get damage(): number {
+    const attackPower: number =
+      (Number(this.attacker.basicAttack) +
+        Number(this.attacker.extraPower.attack?.power || 0)) *
+      10;
+    const defensePower: number =
+      Number(this.defender.extraPower.defense?.power || 0) * 10;
+    const diff: number = attackPower - defensePower;
+    const hit: number = this.randomBetween(diff, 100);
+    if (hit > 10 && hit <= 70) return 1;
+    if (hit > 70 && hit <= 99) return 2;
+    if (hit == 100) return 3;
+    return 0;
+  }
   returnExtraPower(characterId: number): extraPower {
     if (characterId == -1) {
       return { attack: this.swordAttack, defense: this.shieldDefense };
@@ -135,7 +157,7 @@ export default class Attack extends Vue {
     let result: extraPower = { attack: undefined, defense: undefined };
 
     const percentage: number =
-      process.env.VUE_APP_ATTACK_DEFENSE_PERCENTAGE_RATE || 0;
+      process.env.VUE_APP_EXTRA_POWER_PERCENTAGE_RATE || 0;
     if (this.randomBetween(1, 100) > percentage) return result;
 
     if (process.env[`VUE_APP_${characterId}_ATTACK_NAMES`]) {
@@ -171,6 +193,7 @@ export default class Attack extends Vue {
 .attack-view {
   display: flex;
   box-shadow: none;
+  max-width: none;
 
   .centralized {
     display: flex;
@@ -185,7 +208,13 @@ export default class Attack extends Vue {
 
   .attacker-card,
   .defender-card {
-    min-width: 225px;
+    min-width: 340px;
+    min-height: 360px;
+    .bottom {
+      position: absolute;
+      bottom: 40px;
+      right: 10px;
+    }
   }
 }
 

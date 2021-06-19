@@ -156,7 +156,6 @@ export default class Attack extends Vue {
     immediate: true,
   })
   hitTarget(damage: number): void {
-    console.log(damage);
     if (damage) {
       this.$store.dispatch("causeDamage", {
         characterId: this.defender.id,
@@ -199,8 +198,26 @@ export default class Attack extends Vue {
         power: Number(defensePower[randomIndex]),
       };
     }
-
     return result;
+  }
+  beforeDestroy(): void {
+    const defenderHealth = this.$store.state.gameObjects.characters[this.defender.id].health;
+    if (defenderHealth <= 0) {
+      this.$store.commit("updateCharacter", {
+        character: this.defender.id,
+        position: -2,
+      });
+      this.$store.dispatch("openAlert", {
+        open: true,
+        message: `The ${this.defender.name} is dead!`,
+      });
+      this.$store.commit("addLogEntry", `The ${this.defender.name} is dead!`);
+      this.$store.dispatch("updateScore", {
+        points: 50,
+        flag: `kill-${this.defender.name}`,
+        logMessage: ` for killing the ${this.defender.name}!`,
+      });
+    }
   }
 }
 </script>

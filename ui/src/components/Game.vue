@@ -155,11 +155,11 @@ export default class Game extends Vue {
     }
     // Create words
     this.$store.dispatch("addWord", {
-      word: this.words.splice(this.randomBetween(0, this.places.length), 1),
+      word: this.words.splice(this.randomBetween(0, this.places.length), 1)[0],
       type: "book",
     });
     this.$store.dispatch("addWord", {
-      word: this.words.splice(this.randomBetween(0, this.places.length), 1),
+      word: this.words.splice(this.randomBetween(0, this.places.length), 1)[0],
       type: "sorcerer",
     });
   }

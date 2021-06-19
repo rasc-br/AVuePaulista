@@ -298,7 +298,7 @@ export default new Vuex.Store({
       if (shoutDialog.message) {
         dispatch('updateLog', {status: "end", object: { name: shoutDialog.message }});
         switch(shoutDialog.message) {
-          case this.state.gameObjects.currentWords.book:
+          case this.state.gameObjects.currentWords.sorcerer:
             if (this.state.playerStatus.currentPosition == positions.MASP) {
               dispatch ("openAlert", { open: true, message: "You reached the roof!" });
               commit('setCurrentPosition', positions.TetoMASP);
@@ -306,7 +306,7 @@ export default new Vuex.Store({
               dispatch ("openAlert", { open: true, message: "Nothing happened", subMessage: "Nice shout tho" });
             }
             break;
-          case this.state.gameObjects.currentWords.sorcerer:
+          case this.state.gameObjects.currentWords.book:
             if (this.state.status.witchInvoke) {
               dispatch ("openAlert", { open: true, message: "The witch seems disturbed..." });
               commit('setDemonConversion', true);

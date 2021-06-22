@@ -508,7 +508,26 @@ export default new Vuex.Store({
       }
     },
     executeHipnotize({commit, dispatch}) {
-      console.log("Try to hipnotize the sorcerer");
+      const characterNames = process.env.VUE_APP_CHARACTERS.split(", ");
+      const hypnoAttack = randomBetween(0, 100);
+      const sorcererWord = this.state.gameObjects.currentWords.sorcerer;
+      if (hypnoAttack > 50) {
+        dispatch("openAlert", {
+          open: true,
+          message: `The ${characterNames[characters.Feiticeiro]} is under your control!`,
+          subMessage: `Break the ${characterNames[characters.Bruxa]} protection spell with ${sorcererWord}`
+        });
+        commit("setSorcererConversion", true);
+        commit ("updateItem", {item: items.Hipnodisco, position: -2, withPlayer: false} );
+        const itemIndex = this.state.playerStatus.inventory.findIndex((item) => item.id == items.Hipnodisco);
+        if (itemIndex != -1) commit("removeFromInventory", itemIndex);
+        const itemWeight = Number(this.state.gameObjects.items[items.Hipnodisco].weight);
+        commit("setPlayerCapacity", this.state.playerStatus.capacity += itemWeight);
+        commit('addLogEntry', `The ${characterNames[characters.Feiticeiro]} is under your control!`);
+      } else {
+        dispatch("openAlert", { open: true, message: `The ${characterNames[characters.Feiticeiro]} resists!`});
+        commit('addLogEntry', `The ${characterNames[characters.Feiticeiro]} resists!`);
+      }
     },
     defuseBomb({commit, dispatch}) {
       console.log("Try to defuse a bomb");

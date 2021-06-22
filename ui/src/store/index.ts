@@ -483,8 +483,14 @@ export default new Vuex.Store({
         case items.SetaMortal:
           if (action.onObject?.type == "character") {
             dispatch("updateScore", {points: 5, flag: "use-death-arrow", logMessage: "using the most deadly object in game"});
-            // TODO: Attack with Death Arrow
-            console.log("Using seta mortal");
+            const object = (this.state.status.lastAction as action).onObject;
+            commit('setLastAction', {action: "use", object, onObject: null, status: "end"});
+            commit("setAttackDialog", {open: true});
+            commit ("updateItem", {item: items.SetaMortal, position: -2, withPlayer: false} );
+            const itemIndex = this.state.playerStatus.inventory.findIndex((item) => item.id == items.SetaMortal);
+            if (itemIndex != -1) commit("removeFromInventory", itemIndex);
+            const itemWeight = Number(this.state.gameObjects.items[items.SetaMortal].weight);
+            commit("setPlayerCapacity", this.state.playerStatus.capacity += itemWeight);
           } else {
             dispatch("openAlert", { open: true, message: `You can't attack ${action.onObject?.name}`});
           }

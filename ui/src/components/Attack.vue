@@ -21,6 +21,12 @@
           attacker.extraPower.attack.power
         }}
       </q-card-section>
+      <q-card-section
+        v-if="lastAction.action == 'use'"
+        class="q-pt-none text-h6"
+      >
+        {{ itemsNames[items.SetaMortal] }} +{{ setaMortalPower }}
+      </q-card-section>
     </q-card>
 
     <q-card class="middle-card"> ATTACKS </q-card>
@@ -59,6 +65,7 @@ import items from "@/models/items";
   name: "Attack",
 })
 export default class Attack extends Vue {
+  private items = items; // To be used in the template
   private itemsNames = process.env.VUE_APP_ITEMS.split(", ");
   private basicAttacks =
     process.env.VUE_APP_CHARACTERS_BASIC_ATTACK.split(", ");
@@ -137,6 +144,8 @@ export default class Attack extends Vue {
     };
   }
   get damage(): number {
+    if (this.lastAction.action == "use") return this.setaMortalPower;
+
     const attackPower: number =
       (Number(this.attacker.basicAttack) +
         Number(this.attacker.extraPower.attack?.power || 0)) *
@@ -150,6 +159,9 @@ export default class Attack extends Vue {
     if (hit > 70 && hit <= 99) return 2;
     if (hit == 100) return 3;
     return 0;
+  }
+  get setaMortalPower(): number {
+    return this.randomBetween(4, 6);
   }
 
   @Watch("damage", {

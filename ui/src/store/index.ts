@@ -57,6 +57,7 @@ const humanizeLog = (text: string): string => {
 export default new Vuex.Store({
   state: {
     status: {
+      game: "ingame",
       addMinutes: 0,
       log: ["Welcome to AVue Paulisa 2.0"],
       lastAction: {
@@ -226,6 +227,9 @@ export default new Vuex.Store({
     },
     addFlag(state, flag: string):void {
       state.status.scoreFlags.push(flag);
+    },
+    setGame(state, gameStatus: string):void {
+      state.status.game = gameStatus;
     },
   },
   actions: {
@@ -524,6 +528,7 @@ export default new Vuex.Store({
         const itemWeight = Number(this.state.gameObjects.items[items.Hipnodisco].weight);
         commit("setPlayerCapacity", this.state.playerStatus.capacity += itemWeight);
         commit('addLogEntry', `The ${characterNames[characters.Feiticeiro]} is under your control!`);
+        dispatch("updateScore", {points: 10, flag: "convert-sorcerer", logMessage: `hypnotize the  ${characterNames[characters.Feiticeiro]}!`});
       } else {
         dispatch("openAlert", { open: true, message: `The ${characterNames[characters.Feiticeiro]} resists!`});
         commit('addLogEntry', `The ${characterNames[characters.Feiticeiro]} resists!`);
@@ -533,12 +538,32 @@ export default new Vuex.Store({
       console.log("Try to defuse a bomb");
     },
     causeDamage({commit, dispatch}, payload: { characterId: number, damage: number }) {
+      if (payload.characterId == -1) {
+        commit('addLogEntry', `You lost ${payload.damage} of health`);
+        if (payload.damage == 0) dispatch("updateScore", {points: 5, flag: "no-damage", logMessage: "taking no damage!"});
+        const newHealth: number = this.state.playerStatus.health - payload.damage;
+        commit('updatePlayerHealth', newHealth < 0 ? 0 : newHealth);
+        return;
+      }
       const characterNames = process.env.VUE_APP_CHARACTERS.split(", ");
       const currentCharacterName = characterNames[payload.characterId];
       commit('addLogEntry', `The ${currentCharacterName} lost ${payload.damage} of health`);
       if (payload.damage == 3) dispatch("updateScore", {points: 20, flag: "max-damage", logMessage: "using 100% of your power!"});
       const newHealth: number = this.state.gameObjects.characters[payload.characterId].health - payload.damage;
       commit('updateCharacter', { character: payload.characterId, health: newHealth < 0 ? 0 : newHealth });
+    },
+    addLastAction({commit}, payload: action) {
+      commit('setLastAction', payload);
+    },
+    nonPlayerTurn({commit, dispatch}) {
+      // Move chance
+      // Attack chance
+      // Bomb chance
+      // Witch word chance
+      // Recover health chance
+    },
+    updateGameStatus({commit}, gameStatus: string) {
+      commit('setGame', gameStatus);
     },
   },
   modules: {},

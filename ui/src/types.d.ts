@@ -22,7 +22,7 @@ export interface item {
 }
 
 export interface action {
-  action: "take" | "shout" | "attack" | "use" | "drop" | "useOn" | "",
+  action: "take" | "shout" | "attack" | "use" | "drop" | "useOn" | "counter" | "",
   object: gameObject,
   onObject?: gameObject,
   status: "start" | "end" | "cancel",

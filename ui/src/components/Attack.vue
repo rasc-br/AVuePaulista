@@ -213,6 +213,12 @@ export default class Attack extends Vue {
     return result;
   }
   beforeDestroy(): void {
+    if (this.defender.id == -1) {
+      if (this.$store.state.playerStatus.health <= 0) {
+        this.$store.dispatch("updateGameStatus", "died");
+      }
+      return;
+    }
     const defenderHealth = this.$store.state.gameObjects.characters[this.defender.id].health;
     if (defenderHealth <= 0) {
       this.$store.commit("updateCharacter", {
@@ -229,6 +235,23 @@ export default class Attack extends Vue {
         flag: `kill-${this.defender.name}`,
         logMessage: ` for killing the ${this.defender.name}!`,
       });
+    } else if (this.lastAction.action != "counter") {
+      const counterAttack = {
+        action: "counter",
+        object: {
+          id: this.defender.id,
+          name: this.defender.name,
+          type: this.defender.type,
+        },
+        onObject: {
+          id: this.attacker.id,
+          name: this.attacker.name,
+          type: this.attacker.type,
+        },
+        status: "end",
+      };
+      this.$store.dispatch("addLastAction", counterAttack);
+      this.$store.dispatch("executeAttack", counterAttack);
     }
   }
 }

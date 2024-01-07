@@ -190,6 +190,10 @@
   --primary-900:#601010;
 }
 
+body {
+  margin: 0px;
+}
+
 .p-editor-container .p-editor-toolbar {
   background: #1f2937;
   border-top-right-radius: 6px;

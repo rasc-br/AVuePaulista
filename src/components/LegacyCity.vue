@@ -25,6 +25,8 @@
 }
 .building {
   position: absolute;
+  border: 1px solid black !important;
+  background: black;
 }
 .building.floor {
   border: 1px solid green;
@@ -90,11 +92,11 @@
 }
 .moon {
   position: absolute;
-  border: 1px solid aquamarine;
+  box-shadow: inset -31px 14px 0 7px white;
   height: 15%;
   width: 13%;
   display: flex;
-  left: 73%;
+  left: 71%;
   top: 0%;
   border-radius: 65%;
 }

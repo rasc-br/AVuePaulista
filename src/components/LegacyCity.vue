@@ -1,4 +1,22 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { gsap } from "gsap";
+
+onMounted(() => {
+  const cityTimeline = gsap.timeline();
+  cityTimeline.from(
+    ".building",
+    {
+      opacity: 0,
+      y: "random(-50, 50)",
+      duration: 1,
+      height: 0,
+      stagger: 0.15,
+    },
+    "+=1",
+  );
+});
+</script>
 
 <template>
   <div class="legacy-city">

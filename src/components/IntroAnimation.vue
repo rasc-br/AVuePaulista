@@ -7,27 +7,24 @@ import LegacyCity from "./LegacyCity.vue";
 <template>
   <div class="intro">
     <div
-      class="background-image"
+      class="image-container"
       :style="`background-image: url('${cityImage}')`"
-    />
-    <div
-      class="background-image"
-      :style="`background-image: url('${backgroundImage}'); opacity: 0.8;`"
     >
       <LegacyCity />
     </div>
+    <!-- <div
+      class="image-container"
+      :style="`background-image: url('${backgroundImage}')`"
+    /> -->
   </div>
 </template>
 
 <style scoped>
-.background-image {
-  background: no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: contain;
-  width: 100vw;
+.image-container {
   height: 100vh;
-  position: absolute;
+  max-width: 993px;
+  margin: auto;
+  background: no-repeat center center fixed;
+  background-size: contain;
 }
 </style>

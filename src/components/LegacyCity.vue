@@ -11,5 +11,6 @@
   z-index: 1;
   position: relative;
   border: 1px solid green;
+  height: 100%;
 }
 </style>

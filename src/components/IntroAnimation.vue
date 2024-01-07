@@ -9,21 +9,32 @@ import LegacyCity from "./LegacyCity.vue";
     <div
       class="image-container"
       :style="`background-image: url('${cityImage}')`"
-    >
-      <LegacyCity />
-    </div>
-    <!-- <div
-      class="image-container"
-      :style="`background-image: url('${backgroundImage}')`"
+    />
+    <LegacyCity />
+    <!-- <img
+      class="image"
+      :src="backgroundImage"
+      alt="game-intro-gradient"
+      style="opacity: 0.8"
     /> -->
   </div>
 </template>
 
 <style scoped>
+.intro {
+  position: absolute;
+  height: 80vh;
+  width: 80vw;
+  top: calc(50% - 40vh);
+  right: calc(50% - 40vw);
+  display: flex;
+  justify-content: center;
+}
+.image {
+  position: relative;
+}
 .image-container {
-  height: 100vh;
-  max-width: 993px;
-  margin: auto;
+  width: 100%;
   background: no-repeat center center fixed;
   background-size: contain;
 }

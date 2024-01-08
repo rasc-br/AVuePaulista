@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { gsap } from "gsap";
+import { storeToRefs } from "pinia";
+import { useAppStatus } from "../store/useAppStatus";
+
+const appStatusStore = useAppStatus();
+const { introCompleted } = storeToRefs(appStatusStore);
 
 onMounted(() => {
-  const cityTimeline = gsap.timeline();
+  const cityTimeline = gsap.timeline({
+    onComplete: () => {
+      introCompleted.value = true;
+    },
+  });
   cityTimeline
     .from(
       ".building",
@@ -98,7 +107,10 @@ onMounted(() => {
         duration: 3.5,
       },
       "<",
-    );
+    )
+    .to("legacy-city", {
+      delay: 3,
+    });
 });
 </script>
 

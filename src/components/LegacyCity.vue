@@ -4,22 +4,107 @@ import { gsap } from "gsap";
 
 onMounted(() => {
   const cityTimeline = gsap.timeline();
-  cityTimeline.from(
-    ".building",
-    {
+  cityTimeline
+    .from(
+      ".building",
+      {
+        opacity: 0,
+        y: "random(-50, 50)",
+        duration: 1,
+        height: 0,
+        stagger: 0.15,
+      },
+      "+=1",
+    )
+    .from(".moon", {
       opacity: 0,
-      y: "random(-50, 50)",
-      duration: 1,
       height: 0,
-      stagger: 0.15,
-    },
-    "+=1",
-  );
+    })
+    .from(".letter-A", {
+      opacity: 0,
+      left: "100%",
+      duration: 1.5,
+      delay: 2,
+    })
+    .from(".letter-V", {
+      opacity: 0,
+      left: "25%",
+      duration: 1.5,
+    })
+    .from(".letter-P", {
+      opacity: 0,
+      left: "71%",
+      duration: 3.5,
+    })
+    .from(
+      ".letter-a",
+      {
+        opacity: 0,
+        left: "66%",
+        duration: 3.5,
+      },
+      "<",
+    )
+    .from(
+      ".letter-u",
+      {
+        opacity: 0,
+        left: "61%",
+        duration: 3.5,
+      },
+      "<",
+    )
+    .from(
+      ".letter-l",
+      {
+        opacity: 0,
+        left: "57%",
+        duration: 3.5,
+      },
+      "<",
+    )
+    .from(
+      ".letter-i",
+      {
+        opacity: 0,
+        left: "54%",
+        duration: 3.5,
+      },
+      "<",
+    )
+    .from(
+      ".letter-s",
+      {
+        opacity: 0,
+        left: "49%",
+        duration: 3.5,
+      },
+      "<",
+    )
+    .from(
+      ".letter-t",
+      {
+        opacity: 0,
+        left: "44%",
+        duration: 3.5,
+      },
+      "<",
+    )
+    .from(
+      ".letter-a2",
+      {
+        opacity: 0,
+        left: "40%",
+        duration: 3.5,
+      },
+      "<",
+    );
 });
 </script>
 
 <template>
   <div class="legacy-city">
+    <!-- The buildings -->
     <div class="building floor" />
     <div class="building one" />
     <div class="building two" />
@@ -28,6 +113,17 @@ onMounted(() => {
     <div class="building five" />
     <div class="building six" />
     <div class="moon" />
+    <!-- The text -->
+    <div class="planet-font logo-text letter-A">A</div>
+    <div class="planet-font logo-text letter-V">V.</div>
+    <div class="planet-font logo-text letter-P">P</div>
+    <div class="planet-font logo-text letter-a">a</div>
+    <div class="planet-font logo-text letter-u">u</div>
+    <div class="planet-font logo-text letter-l">l</div>
+    <div class="planet-font logo-text letter-i">i</div>
+    <div class="planet-font logo-text letter-s">s</div>
+    <div class="planet-font logo-text letter-t">t</div>
+    <div class="planet-font logo-text letter-a2">a</div>
   </div>
 </template>
 
@@ -115,7 +211,52 @@ onMounted(() => {
   width: 13%;
   display: flex;
   left: 71%;
-  top: 0%;
+  top: 5%;
   border-radius: 65%;
+}
+.logo-text {
+  font-size: 100px;
+  z-index: 3;
+  position: absolute;
+}
+.letter-A {
+  left: 31%;
+  top: 26%;
+}
+.letter-V {
+  left: 35%;
+  top: 26%;
+}
+.letter-P {
+  left: 31%;
+  top: 39%;
+}
+.letter-a {
+  left: 36%;
+  top: 41%;
+}
+.letter-u {
+  left: 41%;
+  top: 44%;
+}
+.letter-l {
+  left: 46%;
+  top: 47%;
+}
+.letter-i {
+  left: 51%;
+  top: 50%;
+}
+.letter-s {
+  left: 54%;
+  top: 53%;
+}
+.letter-t {
+  left: 59%;
+  top: 56%;
+}
+.letter-a2 {
+  left: 63%;
+  top: 58%;
 }
 </style>

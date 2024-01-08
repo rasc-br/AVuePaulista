@@ -8,7 +8,7 @@ import LegacyCity from "./LegacyCity.vue";
   <div class="intro">
     <div
       class="image-container"
-      :style="`background-image: url('${cityImage}')`"
+      :style="`background-image: url('${backgroundImage}')`"
     />
     <LegacyCity />
     <!-- <img

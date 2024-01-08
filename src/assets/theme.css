@@ -67,6 +67,15 @@
   font-named-instance: "Italic";
   src: url("./fonts/Inter-italic.var.woff2?v=3.19") format("woff2");
 }
+@font-face {
+  font-family: 'The Planet';
+  src: url('./fonts/ThePLANET.woff2') format('woff2'),
+      url('./fonts/ThePLANET.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --blue-50:#f5f9ff;
   --blue-100:#d0e1fd;
@@ -5586,6 +5595,10 @@ body {
     background: #f12929;
     color: #030712;
   }
+}
+
+.planet-font {
+  font-family: 'The Planet', sans-serif;
 }
 
 /*# sourceMappingURL=theme.css.map */

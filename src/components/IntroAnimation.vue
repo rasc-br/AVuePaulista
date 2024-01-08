@@ -47,4 +47,10 @@ const { introCompleted } = storeToRefs(appStatusStore);
   height: 100%;
   width: 100%;
 }
+@media (min-width: 1200px) {
+  .intro {
+    width: 60vw;
+    right: calc(50% - 30vw);
+  }
+}
 </style>

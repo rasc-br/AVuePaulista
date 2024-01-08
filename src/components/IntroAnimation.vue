@@ -36,6 +36,6 @@ import LegacyCity from "./LegacyCity.vue";
 .image-container {
   width: 100%;
   background: no-repeat center center fixed;
-  background-size: contain;
+  background-size: cover;
 }
 </style>

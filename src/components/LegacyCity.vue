@@ -139,11 +139,10 @@ onMounted(() => {
 }
 .building {
   position: absolute;
-  border: 1px solid black !important;
+  border: 1px solid black;
   background: black;
 }
 .building.floor {
-  border: 1px solid green;
   height: 10%;
   width: 80%;
   display: flex;
@@ -151,7 +150,6 @@ onMounted(() => {
   margin-bottom: 20px;
 }
 .building.one {
-  border: 1px solid yellow;
   height: 96%;
   width: 17%;
   display: flex;
@@ -160,7 +158,6 @@ onMounted(() => {
   left: 10%;
 }
 .building.two {
-  border: 1px solid orange;
   height: 33%;
   width: 36%;
   display: flex;
@@ -169,7 +166,6 @@ onMounted(() => {
   left: 28%;
 }
 .building.three {
-  border: 1px solid teal;
   height: 51%;
   width: 13%;
   display: flex;
@@ -178,7 +174,6 @@ onMounted(() => {
   left: 34%;
 }
 .building.four {
-  border: 1px solid blue;
   height: 87%;
   width: 15%;
   display: flex;
@@ -187,7 +182,6 @@ onMounted(() => {
   left: 49%;
 }
 .building.five {
-  border: 1px solid violet;
   height: 66%;
   width: 11%;
   display: flex;
@@ -196,7 +190,6 @@ onMounted(() => {
   left: 66%;
 }
 .building.six {
-  border: 1px solid green;
   height: 50%;
   width: 11%;
   display: flex;

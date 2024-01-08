@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import cityImage from "../assets/ai-city-intro.jpg";
-import backgroundImage from "../assets/gradient-intro.jpg";
 import LegacyCity from "./LegacyCity.vue";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
@@ -11,21 +10,11 @@ const { introCompleted } = storeToRefs(appStatusStore);
 
 <template>
   <div class="intro">
-    <div
-      class="image-container"
-      :style="`background-image: url('${backgroundImage}')`"
-    />
     <LegacyCity :class="['legacy-component', introCompleted ? 'gone' : '']" />
-    <!-- <div
-      class="image-container"
+    <div
+      :class="['city-background', introCompleted ? '' : 'gone']"
       :style="`background-image: url('${cityImage}')`"
-    /> -->
-    <!-- <img
-      class="image"
-      :src="backgroundImage"
-      alt="game-intro-gradient"
-      style="opacity: 0.8"
-    /> -->
+    />
   </div>
 </template>
 
@@ -42,15 +31,20 @@ const { introCompleted } = storeToRefs(appStatusStore);
 .image {
   position: relative;
 }
-.image-container {
+.gradient-background {
   width: 100%;
   background: no-repeat center center fixed;
   background-size: cover;
 }
-.legacy-component {
+.gone {
   transition: all 5s;
-}
-.legacy-component.gone {
   opacity: 0;
+}
+.city-background {
+  position: absolute;
+  background: no-repeat center center fixed;
+  background-size: contain;
+  height: 100%;
+  width: 100%;
 }
 </style>

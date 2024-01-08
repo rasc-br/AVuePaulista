@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 import { gsap } from "gsap";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
+import backgroundImage from "../assets/gradient-intro.jpg";
 
 const appStatusStore = useAppStatus();
 const { introCompleted } = storeToRefs(appStatusStore);
@@ -116,6 +117,10 @@ onMounted(() => {
 
 <template>
   <div class="legacy-city">
+    <div
+      class="gradient-background"
+      :style="`background-image: url('${backgroundImage}')`"
+    />
     <!-- The buildings -->
     <div class="building floor" />
     <div class="building one" />
@@ -263,5 +268,11 @@ onMounted(() => {
 .letter-a2 {
   left: 63%;
   top: 58%;
+}
+
+.gradient-background {
+  width: 100%;
+  background: no-repeat center center fixed;
+  background-size: cover;
 }
 </style>

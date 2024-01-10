@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import cityImage from "../assets/ai-city-intro.jpg";
-import vueLogo from "../assets/vue.svg";
+import vueLogo from "../assets/Vue3D.png";
 </script>
 <template>
   <div class="new-city">
@@ -10,7 +10,15 @@ import vueLogo from "../assets/vue.svg";
     />
     <div class="planet-font text-3d letter-A">A</div>
     <img class="vue-logo" :src="vueLogo" />
-    <div class="planet-font text-3d letter-ue">ue</div>
+    <div class="planet-font text-3d letter-ue">u e</div>
+    <div class="planet-font text-3d letter-P">P</div>
+    <div class="planet-font text-3d letter-a">a</div>
+    <div class="planet-font text-3d letter-u">u</div>
+    <div class="planet-font text-3d letter-l">l</div>
+    <div class="planet-font text-3d letter-i">i</div>
+    <div class="planet-font text-3d letter-s">s</div>
+    <div class="planet-font text-3d letter-t">t</div>
+    <div class="planet-font text-3d letter-a2">a</div>
   </div>
 </template>
 
@@ -58,14 +66,46 @@ import vueLogo from "../assets/vue.svg";
   width: 100px;
   position: absolute;
   top: 28%;
-  left: 38%;
+  left: 36%;
 }
 .letter-A {
   left: 31%;
   top: 26%;
 }
 .letter-ue {
-  left: 47%;
+  left: 44%;
   top: 26%;
+}
+.letter-P {
+  left: 31%;
+  top: 39%;
+}
+.letter-a {
+  left: 36%;
+  top: 41%;
+}
+.letter-u {
+  left: 41%;
+  top: 44%;
+}
+.letter-l {
+  left: 46%;
+  top: 47%;
+}
+.letter-i {
+  left: 51%;
+  top: 50%;
+}
+.letter-s {
+  left: 54%;
+  top: 53%;
+}
+.letter-t {
+  left: 59%;
+  top: 56%;
+}
+.letter-a2 {
+  left: 63%;
+  top: 58%;
 }
 </style>

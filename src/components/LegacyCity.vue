@@ -4,14 +4,18 @@ import { gsap } from "gsap";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import backgroundImage from "../assets/gradient-intro.jpg";
+import { GameMode } from "../../types";
 
 const appStatusStore = useAppStatus();
-const { introCompleted } = storeToRefs(appStatusStore);
+const { introCompleted, gameMode } = storeToRefs(appStatusStore);
 
 onMounted(() => {
   const cityTimeline = gsap.timeline({
     onComplete: () => {
       introCompleted.value = true;
+      setTimeout(() => {
+        gameMode.value = GameMode.game;
+      }, 3000);
     },
   });
   cityTimeline

@@ -66,7 +66,7 @@ import vueLogo from "../assets/Vue3D.png";
   width: 100px;
   position: absolute;
   top: 28%;
-  left: 36%;
+  left: 35%;
 }
 .letter-A {
   left: 31%;

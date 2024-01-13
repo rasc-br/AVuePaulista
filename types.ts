@@ -6,3 +6,9 @@ export interface FirebaseConfig {
   messagingSenderId: string;
   appId: string;
 }
+
+export enum GameMode {
+  intro,
+  game,
+  end,
+}

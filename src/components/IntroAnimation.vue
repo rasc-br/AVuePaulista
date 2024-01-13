@@ -4,15 +4,20 @@ import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import NewCity from "./NewCity.vue";
 import { IntroMode } from "../../types";
+import { computed } from "vue";
 
 const appStatusStore = useAppStatus();
 const { introMode } = storeToRefs(appStatusStore);
+const currentComponent = computed(() => {
+  return introMode.value === IntroMode.legacy ? LegacyCity : NewCity;
+});
 </script>
 
 <template>
   <div class="intro">
-    <LegacyCity :class="['legacy-component', introMode === IntroMode.new ? 'gone' : '']" />
-    <NewCity :class="['newcity-component', introMode === IntroMode.legacy ? 'gone' : '']" />
+    <Transition name="fade">
+      <component :is="currentComponent"></component>
+    </Transition>
   </div>
 </template>
 
@@ -26,13 +31,16 @@ const { introMode } = storeToRefs(appStatusStore);
   display: flex;
   justify-content: center;
 }
-.gone {
-  transition: all 5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
-.newcity-component {
-  transition: all 5s;
-}
+
 @media (min-width: 1200px) {
   .intro {
     width: 60vw;

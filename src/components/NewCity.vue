@@ -4,10 +4,9 @@ import vueLogo from "../assets/Vue3D.png";
 </script>
 <template>
   <div class="new-city">
-    <div class="city-background glow" :style="`background-image: url('${cityImage}')`" />
+    <div class="city-background" :style="`background-image: url('${cityImage}')`" />
     <div class="planet-font text-3d letter-A">A</div>
     <img class="vue-logo" :src="vueLogo" />
-    <div class="planet-font text-3d letter-ue">u e</div>
     <div class="planet-font text-3d letter-P">P</div>
     <div class="planet-font text-3d letter-a">a</div>
     <div class="planet-font text-3d letter-u">u</div>
@@ -70,10 +69,6 @@ import vueLogo from "../assets/Vue3D.png";
   left: 31%;
   top: 26%;
 }
-.letter-ue {
-  left: 44%;
-  top: 26%;
-}
 .letter-P {
   left: 31%;
   top: 39%;
@@ -105,12 +100,5 @@ import vueLogo from "../assets/Vue3D.png";
 .letter-a2 {
   left: 63%;
   top: 58%;
-}
-.glow {
-  box-shadow:
-    0 0 10px 5px #e04848,
-    0 0 12px 7px #ebecca,
-    0 0 20px 19px #e22b5f,
-    0 0 19px 10px #ff1493;
 }
 </style>

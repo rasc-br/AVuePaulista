@@ -3,15 +3,16 @@ import LegacyCity from "./LegacyCity.vue";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import NewCity from "./NewCity.vue";
+import { IntroMode } from "../../types";
 
 const appStatusStore = useAppStatus();
-const { introCompleted } = storeToRefs(appStatusStore);
+const { introMode } = storeToRefs(appStatusStore);
 </script>
 
 <template>
   <div class="intro">
-    <LegacyCity :class="['legacy-component', introCompleted ? 'gone' : '']" />
-    <NewCity :class="['newcity-component', introCompleted ? '' : 'gone']" />
+    <LegacyCity :class="['legacy-component', introMode === IntroMode.new ? 'gone' : '']" />
+    <NewCity :class="['newcity-component', introMode === IntroMode.legacy ? 'gone' : '']" />
   </div>
 </template>
 

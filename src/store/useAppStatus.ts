@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { GameMode } from "../../types";
+import { GameMode, IntroMode } from "../../types";
 
 export const useAppStatus = defineStore("appStatus", {
   state: () => ({
-    introCompleted: false,
+    introMode: IntroMode.legacy,
     gameMode: GameMode.intro,
   }),
   actions: {},

@@ -49,5 +49,8 @@
       "ecmaVersion": 2022
     },
     "rules": {}
+  },
+  "prettier": {
+    "printWidth": 160
   }
 }

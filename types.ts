@@ -12,3 +12,9 @@ export enum GameMode {
   game,
   end,
 }
+
+export enum IntroMode {
+  legacy,
+  new,
+  done,
+}

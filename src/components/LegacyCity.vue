@@ -4,18 +4,15 @@ import { gsap } from "gsap";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import backgroundImage from "../assets/gradient-intro.jpg";
-import { GameMode } from "../../types";
+import { IntroMode } from "../../types";
 
 const appStatusStore = useAppStatus();
-const { introCompleted, gameMode } = storeToRefs(appStatusStore);
+const { introMode } = storeToRefs(appStatusStore);
 
 onMounted(() => {
   const cityTimeline = gsap.timeline({
     onComplete: () => {
-      introCompleted.value = true;
-      setTimeout(() => {
-        gameMode.value = GameMode.game;
-      }, 3000);
+      introMode.value = IntroMode.new;
     },
   });
   cityTimeline
@@ -121,10 +118,7 @@ onMounted(() => {
 
 <template>
   <div class="legacy-city">
-    <div
-      class="gradient-background"
-      :style="`background-image: url('${backgroundImage}')`"
-    />
+    <div class="gradient-background" :style="`background-image: url('${backgroundImage}')`" />
     <!-- The buildings -->
     <div class="building floor" />
     <div class="building one" />

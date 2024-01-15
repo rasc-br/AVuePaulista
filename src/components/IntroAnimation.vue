@@ -16,7 +16,7 @@ const currentComponent = computed(() => {
 <template>
   <div class="intro">
     <Transition name="fade">
-      <component :is="currentComponent"></component>
+      <component :is="currentComponent" />
     </Transition>
   </div>
 </template>

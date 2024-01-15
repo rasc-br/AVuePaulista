@@ -1,6 +1,41 @@
 <script setup lang="ts">
 import cityImage from "../assets/ai-city-intro.jpg";
 import vueLogo from "../assets/Vue3D.png";
+import { onMounted } from "vue";
+import { gsap } from "gsap";
+import { storeToRefs } from "pinia";
+import { useAppStatus } from "../store/useAppStatus";
+import { IntroMode } from "../../types";
+
+const appStatusStore = useAppStatus();
+const { introMode } = storeToRefs(appStatusStore);
+
+onMounted(() => {
+  const newCityTimeline = gsap.timeline({
+    onComplete: () => {
+      introMode.value = IntroMode.done;
+    },
+  });
+  newCityTimeline
+    .to(".letter-A", {
+      left: "100%",
+      opacity: 0,
+      duration: 1.5,
+      delay: 2,
+    })
+    .to(".vue-logo", {
+      top: "100%",
+      opacity: 0,
+      duration: 1.5,
+    })
+    .to([".letter-P", ".letter-a", ".letter-u", ".letter-l", ".letter-i", ".letter-s", ".letter-t", ".letter-a2"], {
+      color: "#d63e3e",
+      duration: 0.5,
+      stagger: 0.3,
+      "text-shadow":
+        "1px 1px 1px #5e1b1b, 1px 2px 1px #5e1b1b, 1px 3px 1px #5e1b1b, 1px 4px 1px #5e1b1b, 1px 5px 1px #5e1b1b, 1px 6px 1px #5e1b1b, 1px 7px 1px #5e1b1b, 1px 8px 1px #5e1b1b, 1px 9px 1px #5e1b1b, 1px 10px 1px #5e1b1b",
+    });
+});
 </script>
 <template>
   <div class="new-city">
@@ -62,7 +97,7 @@ import vueLogo from "../assets/Vue3D.png";
   height: 100px;
   width: 100px;
   position: absolute;
-  top: 28%;
+  top: 28.5%;
   left: 35%;
 }
 .letter-A {

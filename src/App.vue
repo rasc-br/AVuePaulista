@@ -6,7 +6,7 @@ import MainGame from "./components/MainGame.vue";
   <MainGame />
 </template>
 
-<style scoped>
+<style>
 body {
   overflow: hidden;
 }

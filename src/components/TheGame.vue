@@ -15,13 +15,17 @@ onMounted(() => {
       gameMode.value = GameMode.game;
     },
   });
-  circleTImeline.to(".transition-circle", {
-    width: "150vw",
-    height: "250vh",
-    top: "-75%",
-    left: "-25%",
-    duration: 3,
-  });
+  circleTImeline
+    .to(".transition-circle", {
+      width: "150vw",
+      height: "250vh",
+      top: "-75%",
+      left: "-25%",
+      duration: 3,
+    })
+    .to(".transition-circle", {
+      "z-index": 0,
+    });
 });
 </script>
 
@@ -39,5 +43,6 @@ onMounted(() => {
   left: 50%;
   width: 0.1vw;
   height: 0.1vh;
+  z-index: 2;
 }
 </style>

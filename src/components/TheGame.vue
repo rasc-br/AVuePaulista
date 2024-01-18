@@ -16,10 +16,10 @@ onMounted(() => {
     },
   });
   circleTImeline.to(".transition-circle", {
-    width: "200vw",
-    height: "200vh",
-    top: "-50%",
-    left: "-50%",
+    width: "150vw",
+    height: "250vh",
+    top: "-75%",
+    left: "-25%",
     duration: 3,
   });
 });

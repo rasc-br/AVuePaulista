@@ -16,7 +16,11 @@ onMounted(() => {
     },
   });
   circleTImeline.to(".transition-circle", {
-    scale: 1,
+    width: "200vw",
+    height: "200vh",
+    top: "-50%",
+    left: "-50%",
+    duration: 3,
   });
 });
 </script>
@@ -30,12 +34,10 @@ onMounted(() => {
 <style scoped>
 .transition-circle {
   position: absolute;
-  background-color: #d63e3e;
   border-radius: 50%;
-  top: -50%;
-  left: -50%;
-  width: 200vw;
-  height: 200vh;
-  scale: 0.001;
+  top: 50%;
+  left: 50%;
+  width: 0.1vw;
+  height: 0.1vh;
 }
 </style>

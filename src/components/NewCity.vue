@@ -18,13 +18,13 @@ onMounted(() => {
   });
   newCityTimeline
     .to(".letter-A", {
-      left: "100%",
+      left: "80%",
       opacity: 0,
       duration: 1.5,
-      delay: 2,
+      delay: 4,
     })
     .to(".vue-logo", {
-      top: "100%",
+      top: "80%",
       opacity: 0,
       duration: 1.5,
     })
@@ -34,6 +34,9 @@ onMounted(() => {
       stagger: 0.3,
       "text-shadow":
         "1px 1px 1px #5e1b1b, 1px 2px 1px #5e1b1b, 1px 3px 1px #5e1b1b, 1px 4px 1px #5e1b1b, 1px 5px 1px #5e1b1b, 1px 6px 1px #5e1b1b, 1px 7px 1px #5e1b1b, 1px 8px 1px #5e1b1b, 1px 9px 1px #5e1b1b, 1px 10px 1px #5e1b1b",
+    })
+    .to("new-city", {
+      delay: 1,
     });
 });
 </script>

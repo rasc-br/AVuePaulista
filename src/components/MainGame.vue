@@ -11,8 +11,8 @@ const { introMode, gameMode } = storeToRefs(appStatusStore);
 
 <template>
   <div class="avue-paulista">
-    <TheGame v-if="introMode === IntroMode.done" />
     <IntroAnimation v-if="gameMode === GameMode.intro" />
+    <TheGame v-if="introMode === IntroMode.done" />
   </div>
 </template>
 

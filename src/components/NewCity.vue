@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import cityImage from "../assets/ai-city-intro.jpg";
 import vueLogo from "../assets/Vue3D.png";
-import { onMounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { gsap } from "gsap";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
@@ -9,13 +9,13 @@ import { IntroMode } from "../../types";
 
 const appStatusStore = useAppStatus();
 const { introMode } = storeToRefs(appStatusStore);
+const newCityTimeline = gsap.timeline({
+  onComplete: () => {
+    introMode.value = IntroMode.done;
+  },
+});
 
 onMounted(() => {
-  const newCityTimeline = gsap.timeline({
-    onComplete: () => {
-      introMode.value = IntroMode.done;
-    },
-  });
   newCityTimeline
     .to(".letter-A", {
       left: "80%",
@@ -38,6 +38,10 @@ onMounted(() => {
     .to("new-city", {
       delay: 1,
     });
+});
+
+onUnmounted(() => {
+  newCityTimeline.kill();
 });
 </script>
 <template>

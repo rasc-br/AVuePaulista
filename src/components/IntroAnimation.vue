@@ -31,15 +31,6 @@ const currentComponent = computed(() => {
   display: flex;
   justify-content: center;
 }
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 
 @media (min-width: 1200px) {
   .intro {

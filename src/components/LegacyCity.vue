@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onBeforeUnmount, onMounted } from "vue";
 import { gsap } from "gsap";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
@@ -8,13 +8,13 @@ import { IntroMode } from "../../types";
 
 const appStatusStore = useAppStatus();
 const { introMode } = storeToRefs(appStatusStore);
+const cityTimeline = gsap.timeline({
+  onComplete: () => {
+    introMode.value = IntroMode.new;
+  },
+});
 
 onMounted(() => {
-  const cityTimeline = gsap.timeline({
-    onComplete: () => {
-      introMode.value = IntroMode.new;
-    },
-  });
   cityTimeline
     .from(
       ".building",
@@ -113,6 +113,10 @@ onMounted(() => {
     .to("legacy-city", {
       delay: 3,
     });
+});
+
+onBeforeUnmount(() => {
+  cityTimeline.kill();
 });
 </script>
 

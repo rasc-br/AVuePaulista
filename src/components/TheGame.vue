@@ -17,6 +17,7 @@ onMounted(() => {
   });
   circleTImeline
     .to(".transition-circle", {
+      delay: 0.1,
       width: "150vw",
       height: "250vh",
       top: "-75%",

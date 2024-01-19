@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import cityImage from "../assets/ai-city-intro.jpg";
 import vueLogo from "../assets/Vue3D.png";
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onBeforeUnmount } from "vue";
 import { gsap } from "gsap";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
@@ -40,7 +40,7 @@ onMounted(() => {
     });
 });
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   newCityTimeline.kill();
 });
 </script>

@@ -32,11 +32,35 @@ onMounted(() => {
 
 <template>
   <div class="main-game">
-    <div class="transition-circle" :style="`background-image: url('${backgroundImage}')`"></div>
+    <div class="transition-circle" :style="`background-image: url('${backgroundImage}')`" />
+    <div v-if="gameMode === GameMode.game" class="grid-container full">
+      <div class="cell moviments"><span>moviments</span></div>
+      <div class="cell logo"><span>logo</span></div>
+      <div class="cell clock"><span>clock</span></div>
+      <div class="cell room-actions"><span>room-actions</span></div>
+      <div class="cell room"><span>room</span></div>
+      <div class="cell inventory"><span>inventory</span></div>
+      <div class="cell inventory-actions"><span>inventory-actions</span></div>
+      <div class="cell player-status"><span>player-status</span></div>
+      <div class="cell logs"><span>logs</span></div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.full {
+  width: 100wv;
+  height: 100vh;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
+  grid-template-rows: 20% 60% 20%;
+  grid-template-areas:
+    "moviments moviments moviments moviments moviments logo logo clock clock clock"
+    "room-actions room room room room inventory inventory inventory inventory inventory-actions"
+    "player-status player-status player-status . . . logs logs logs logs";
+}
 .transition-circle {
   position: absolute;
   border-radius: 50%;
@@ -45,5 +69,35 @@ onMounted(() => {
   width: 0.1vw;
   height: 0.1vh;
   z-index: 2;
+}
+.cell {
+  z-index: 1;
+}
+.moviments {
+  grid-area: moviments;
+}
+.logo {
+  grid-area: logo;
+}
+.clock {
+  grid-area: clock;
+}
+.room-actions {
+  grid-area: room-actions;
+}
+.room {
+  grid-area: room;
+}
+.inventory {
+  grid-area: inventory;
+}
+.inventory-actions {
+  grid-area: inventory-actions;
+}
+.player-status {
+  grid-area: player-status;
+}
+.logs {
+  grid-area: logs;
 }
 </style>

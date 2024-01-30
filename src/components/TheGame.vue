@@ -5,6 +5,7 @@ import backgroundImage from "../assets/gradient-intro.jpg";
 import { GameMode } from "../../types";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
+import PlayerMoviments from "./InGame/PlayerMoviments.vue";
 
 const appStatusStore = useAppStatus();
 const { gameMode } = storeToRefs(appStatusStore);
@@ -34,7 +35,7 @@ onMounted(() => {
   <div class="main-game">
     <div class="transition-circle" :style="`background-image: url('${backgroundImage}')`" />
     <div v-if="gameMode === GameMode.game" class="grid-container full">
-      <div class="cell moviments"><span>moviments</span></div>
+      <div class="cell moviments"><PlayerMoviments /></div>
       <div class="cell logo"><span>logo</span></div>
       <div class="cell clock"><span>clock</span></div>
       <div class="cell room-actions"><span>room-actions</span></div>
@@ -60,6 +61,7 @@ onMounted(() => {
     "moviments moviments moviments moviments moviments logo logo clock clock clock"
     "room-actions room room room room inventory inventory inventory inventory inventory-actions"
     "player-status player-status player-status . . . logs logs logs logs";
+  padding: 16px;
 }
 .transition-circle {
   position: absolute;

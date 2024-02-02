@@ -4,6 +4,7 @@ import Arrow from "./AnimatedArrow.vue";
 import { ref } from "vue";
 
 const showArrow = ref([false, false, false, false]);
+//TODO: Template in a loop with index (including grid-area and showarrow) and probably dynamic label on loop
 </script>
 
 <template>

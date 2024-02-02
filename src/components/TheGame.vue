@@ -6,6 +6,7 @@ import { GameMode } from "../../types";
 import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import PlayerMoviments from "./InGame/PlayerMoviments.vue";
+import SimpleLogo from "./InGame/AVLogo.vue";
 
 const appStatusStore = useAppStatus();
 const { gameMode } = storeToRefs(appStatusStore);
@@ -36,7 +37,7 @@ onMounted(() => {
     <div class="transition-circle" :style="`background-image: url('${backgroundImage}')`" />
     <div v-if="gameMode === GameMode.game" class="grid-container full">
       <div class="cell moviments"><PlayerMoviments /></div>
-      <div class="cell logo"><span>logo</span></div>
+      <div class="cell logo"><SimpleLogo /></div>
       <div class="cell clock"><span>clock</span></div>
       <div class="cell room-actions"><span>room-actions</span></div>
       <div class="cell room"><span>room</span></div>

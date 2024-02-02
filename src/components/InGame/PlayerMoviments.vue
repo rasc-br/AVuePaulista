@@ -31,7 +31,6 @@ import Button from "primevue/button";
   grid-area: current;
 }
 .p-button.possible-moviment {
-  /* margin-left: 55px; */
   color: var(--primary-50);
   background: rgba(179, 132, 132, 0.26);
 }

@@ -1700,11 +1700,7 @@ body {
     font-size: 1rem;
     transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
     border-radius: 6px;
-  }
-  .p-button:not(:disabled):hover {
-    background: #f86363;
-    color: #030712;
-    border-color: #f86363;
+    transition: filter 0.5s;
   }
   .p-button:not(:disabled):active {
     background: #f6bcbc;
@@ -1744,9 +1740,7 @@ body {
     border-color: transparent;
   }
   .p-button.p-button-text:not(:disabled):hover {
-    background: rgba(241, 41, 41, 0.04);
-    color: #f12929;
-    border-color: transparent;
+    filter: brightness(1.5);
   }
   .p-button.p-button-text:not(:disabled):active {
     background: rgba(241, 41, 41, 0.16);
@@ -5544,9 +5538,6 @@ body {
   }
   .p-galleria .p-galleria-indicators .p-galleria-indicator.p-highlight button {
     background-color: #f12929;
-  }
-  .p-button:focus {
-    box-shadow: 0 0 0 2px #1c2127, 0 0 0 4px rgba(241, 41, 41, 0.7), 0 1px 2px 0 rgba(0, 0, 0, 0);
   }
   .p-button.p-button-secondary:enabled:focus {
     box-shadow: 0 0 0 2px #1c2127, 0 0 0 4px rgba(148, 163, 184, 0.7), 0 1px 2px 0 rgba(0, 0, 0, 0);

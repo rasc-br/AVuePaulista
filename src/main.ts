@@ -9,7 +9,7 @@ import { createPinia } from "pinia";
 const pinia = createPinia();
 const aVuePaulistaApp = createApp(App);
 
-aVuePaulistaApp.use(PrimeVue);
+aVuePaulistaApp.use(PrimeVue, { ripple: true });
 aVuePaulistaApp.use(VueFire, {
   firebaseApp,
   modules: [VueFireAuth()],

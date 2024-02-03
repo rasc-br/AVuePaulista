@@ -8,6 +8,7 @@ import { useAppStatus } from "../store/useAppStatus";
 import PlayerMoviments from "./InGame/PlayerMoviments.vue";
 import SimpleLogo from "./InGame/AVLogo.vue";
 import Clock from "./InGame/AVClock.vue";
+import PlayerStatus from "./InGame/PlayerStatus.vue";
 
 const appStatusStore = useAppStatus();
 const { gameMode } = storeToRefs(appStatusStore);
@@ -44,7 +45,7 @@ onMounted(() => {
       <div class="cell room"><span>room</span></div>
       <div class="cell inventory"><span>inventory</span></div>
       <div class="cell inventory-actions"><span>inventory-actions</span></div>
-      <div class="cell player-status"><span>player-status</span></div>
+      <div class="cell player-status"><PlayerStatus /></div>
       <div class="cell logs"><span>logs</span></div>
     </div>
   </div>

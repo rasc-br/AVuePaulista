@@ -14,6 +14,7 @@ import vueLogo from "../../assets/Vue3D.png";
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 10px;
 }
 .text-3d {
   z-index: 1;

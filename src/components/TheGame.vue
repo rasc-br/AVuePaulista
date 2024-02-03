@@ -7,6 +7,7 @@ import { storeToRefs } from "pinia";
 import { useAppStatus } from "../store/useAppStatus";
 import PlayerMoviments from "./InGame/PlayerMoviments.vue";
 import SimpleLogo from "./InGame/AVLogo.vue";
+import Clock from "./InGame/AVClock.vue";
 
 const appStatusStore = useAppStatus();
 const { gameMode } = storeToRefs(appStatusStore);
@@ -38,7 +39,7 @@ onMounted(() => {
     <div v-if="gameMode === GameMode.game" class="grid-container full">
       <div class="cell moviments"><PlayerMoviments /></div>
       <div class="cell logo"><SimpleLogo /></div>
-      <div class="cell clock"><span>clock</span></div>
+      <div class="cell clock"><Clock /></div>
       <div class="cell room-actions"><span>room-actions</span></div>
       <div class="cell room"><span>room</span></div>
       <div class="cell inventory"><span>inventory</span></div>
